@@ -15,10 +15,7 @@ public class GameController : MonoBehaviour
             .SetScore(0, 1)
             .SetScore(1, 0);
 
-        bool hasWon = playerOne.CheckHasWon();
-
-        Debug.Log("Player One has won: " + hasWon);
-        playerOne.DisplayGrid();
+        CheckPlayerHasWon(playerOne);
 
         playerOne.ResetScore();
         playerOne
@@ -26,9 +23,50 @@ public class GameController : MonoBehaviour
             .SetScore(0, 1)
             .SetScore(0, 2);
 
-        hasWon = playerOne.CheckHasWon();
+        CheckPlayerHasWon(playerOne);
 
-        Debug.Log("Player One has won: " + hasWon);
-        playerOne.DisplayGrid();
+        playerOne.ResetScore();
+        playerOne
+            .SetScore(0, 0)
+            .SetScore(1, 0)
+            .SetScore(1, 1)
+            .SetScore(2, 0);
+
+        CheckPlayerHasWon(playerOne);
+        playerOne.ResetScore();
+
+        playerOne
+            .SetScore(0, 0)
+            .SetScore(1, 1)
+            .SetScore(1, 2)
+            .SetScore(2, 2);
+
+        CheckPlayerHasWon(playerOne);
+        playerOne.ResetScore();
+
+        playerOne
+            .SetScore(0, 2)
+            .SetScore(1, 1)
+            .SetScore(2, 0)
+            .SetScore(2, 2);
+
+        CheckPlayerHasWon(playerOne);
+        playerOne.ResetScore();
+
+        playerOne
+            .SetScore(0, 2)
+            .SetScore(1, 1)
+            .SetScore(2, 2);
+
+        CheckPlayerHasWon(playerOne);
+        playerOne.ResetScore();
+    }
+
+    public void CheckPlayerHasWon(PlayerController player)
+    {
+        bool hasWon = player.CheckHasWon();
+
+        Debug.Log("Player has won: " + hasWon);
+        player.DisplayGrid();
     }
 }

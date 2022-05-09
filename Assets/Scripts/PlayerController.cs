@@ -29,26 +29,79 @@ public class PlayerController : MonoBehaviour
     public bool CheckHasWon()
     {
         bool hasWon = false;
+        hasWon = CheckHasWon_Horizontal() || CheckHasWon_Vertical() || CheckHasWon_Diagonal();
+
+        return hasWon;
+    }
+
+    public bool CheckHasWon_Horizontal()
+    {
+        return CheckHasWon_HorizontalVertical();
+    }
+    public bool CheckHasWon_Vertical()
+    {
+        return CheckHasWon_HorizontalVertical(true);
+    }
+    private bool CheckHasWon_HorizontalVertical(bool checkVertical = false)
+    {
+        bool hasWon = false;
         int lineScoreCount = 0;
         bool hasScore = false;
 
-        //check row
         for (int i = 0; i < rowCount; i++)
         {
             for (int j = 0; j < columnCount; j++)
             {
-                hasScore = scoreArray[i, j] == true;
+                if (checkVertical)
+                    hasScore = scoreArray[i, j] == true;
+                else
+                    hasScore = scoreArray[j, i] == true;
+
                 if (hasScore)
                     lineScoreCount++;
 
-                if (lineScoreCount >= columnCount)
-                {
-                    hasWon = true;
+                hasWon = lineScoreCount >= columnCount;
+
+                if (hasWon)
                     break;
-                }
             }
 
+            if (hasWon)
+                break;
+
             lineScoreCount = 0;
+            hasScore = false;
+        }
+
+        return hasWon;
+    }
+    public bool CheckHasWon_Diagonal()
+    {
+        bool hasWon = CheckHasWon_Diagonal(false) || CheckHasWon_Diagonal(true);
+
+        return hasWon;
+    }
+    private bool CheckHasWon_Diagonal(bool reverse = false)
+    {
+        bool hasWon = false;
+        int lineScoreCount = 0;
+        bool hasScore = false;
+
+        for (int i = 0; i < rowCount; i++)
+        {
+            if (!reverse)
+                hasScore = scoreArray[i, i] == true;
+            else
+                hasScore = scoreArray[i, rowCount - 1 - i] == true;
+
+            if (hasScore)
+                lineScoreCount++;
+
+            hasWon = lineScoreCount >= rowCount;
+
+            if (hasWon)
+                break;
+
             hasScore = false;
         }
 
