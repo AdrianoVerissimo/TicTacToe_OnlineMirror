@@ -35,19 +35,19 @@ public class BoardController : MonoBehaviour
 
         return this;
     }
-    public bool CheckHasWon(CharacterController player)
+
+    public bool HasPlayerWon(CharacterController player)
     {
         bool hasWon = false;
         hasWon = CheckHasWon_Horizontal(player) || CheckHasWon_Vertical(player) || CheckHasWon_Diagonal(player);
 
         return hasWon;
     }
-
-    public bool CheckHasWon_Horizontal(CharacterController player)
+    private bool CheckHasWon_Horizontal(CharacterController player)
     {
         return CheckHasWon_HorizontalVertical(player);
     }
-    public bool CheckHasWon_Vertical(CharacterController player)
+    private bool CheckHasWon_Vertical(CharacterController player)
     {
         return CheckHasWon_HorizontalVertical(player, true);
     }
@@ -84,7 +84,7 @@ public class BoardController : MonoBehaviour
 
         return hasWon;
     }
-    public bool CheckHasWon_Diagonal(CharacterController player)
+    private bool CheckHasWon_Diagonal(CharacterController player)
     {
         bool hasWon = CheckHasWon_Diagonal(player, false) || CheckHasWon_Diagonal(player, true);
 
@@ -131,9 +131,9 @@ public class BoardController : MonoBehaviour
         Debug.Log(text);
     }
 
-    public void CheckPlayerHasWon(CharacterController player)
+    public void DisplayPlayerHasWon(CharacterController player)
     {
-        bool hasWon = CheckHasWon(player);
+        bool hasWon = HasPlayerWon(player);
 
         Debug.Log("Player has won: " + hasWon);
         DisplayGrid();

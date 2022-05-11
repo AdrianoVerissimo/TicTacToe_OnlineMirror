@@ -10,9 +10,8 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Start");
-        CharacterController.CreatePlayerID(playerOne);
-        CharacterController.CreatePlayerID(playerTwo);
+        CharacterController.GeneratePlayerID(playerOne);
+        CharacterController.GeneratePlayerID(playerTwo);
 
         boardController
             .AddScore(playerOne, 0, 0)
@@ -21,7 +20,7 @@ public class GameController : MonoBehaviour
             .AddScore(playerTwo, 1, 1)
             .AddScore(playerOne, 0, 2);
 
-        boardController.CheckPlayerHasWon(playerOne);
-        boardController.CheckPlayerHasWon(playerTwo);
+        boardController.DisplayPlayerHasWon(playerOne);
+        boardController.DisplayPlayerHasWon(playerTwo);
     }
 }

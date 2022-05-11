@@ -13,12 +13,12 @@ public class CharacterController : MonoBehaviour
         return this;
     }
 
-    public static void CreatePlayerID(CharacterController player)
+    public static void GeneratePlayerID(CharacterController player)
     {
-        int newID = GeneratePlayerID();
+        int newID = GetNewPlayerID();
         player.SetPlayerID(newID);
     }
-    public static int GeneratePlayerID()
+    private static int GetNewPlayerID()
     {
         int newID = CountPlayerID;
         SetCountPlayerID(CountPlayerID + 1);
