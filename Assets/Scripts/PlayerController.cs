@@ -3,9 +3,17 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-    private bool[,] scoreArray = new bool[3, 3];
+    public static readonly int NoScoreValue = -1;
+
+    private int[,] scoreArray = new int[3, 3];
     private int rowCount = 3;
     private int columnCount = 3;
+    private int playerID;
+
+    public PlayerController()
+    {
+        ResetScore();
+    }
 
     public void ResetScore()
     {
@@ -13,16 +21,18 @@ public class PlayerController : MonoBehaviour
         {
             for (int j = 0; j < columnCount; j++)
             {
-                SetScore(i, j, false);
+                RemoveScore(i, j);
             }
         }
     }
-    public PlayerController SetScore(int rowPosition, int columnPosition, bool valueToSet = true)
+    public PlayerController AddScore(int rowPosition, int columnPosition) => SetScore(rowPosition, columnPosition, playerID);
+    public PlayerController RemoveScore(int rowPosition, int columnPosition) => SetScore(rowPosition, columnPosition, NoScoreValue);
+    private PlayerController SetScore(int rowPosition, int columnPosition, int value)
     {
         rowPosition = rowPosition >= rowCount? rowCount - 1 : rowPosition;
         columnPosition = columnPosition >= columnCount? rowCount - 1 : columnPosition;
 
-        scoreArray[rowPosition, columnPosition] = valueToSet;
+        scoreArray[rowPosition, columnPosition] = value;
 
         return this;
     }
@@ -53,9 +63,9 @@ public class PlayerController : MonoBehaviour
             for (int j = 0; j < columnCount; j++)
             {
                 if (checkVertical)
-                    hasScore = scoreArray[i, j] == true;
+                    hasScore = scoreArray[i, j] == playerID;
                 else
-                    hasScore = scoreArray[j, i] == true;
+                    hasScore = scoreArray[j, i] == playerID;
 
                 if (hasScore)
                     lineScoreCount++;
@@ -90,9 +100,9 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < rowCount; i++)
         {
             if (!reverse)
-                hasScore = scoreArray[i, i] == true;
+                hasScore = scoreArray[i, i] == playerID;
             else
-                hasScore = scoreArray[i, rowCount - 1 - i] == true;
+                hasScore = scoreArray[i, rowCount - 1 - i] == playerID;
 
             if (hasScore)
                 lineScoreCount++;
@@ -120,5 +130,11 @@ public class PlayerController : MonoBehaviour
             text += "\n";
         }
         Debug.Log(text);
+    }
+
+    public PlayerController SetPlayerID(int playerID)
+    {
+        this.playerID = playerID;
+        return this;
     }
 }

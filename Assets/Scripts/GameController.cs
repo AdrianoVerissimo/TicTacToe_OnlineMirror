@@ -7,59 +7,47 @@ public class GameController : MonoBehaviour
     private PlayerController playerOne;
     private PlayerController playerTwo;
 
+    private int countPlayerID = 0;
+
     private void Start()
     {
         playerOne = new PlayerController();
+        playerOne.SetPlayerID(GeneratePlayerID());
+
+        playerTwo = new PlayerController();
+        playerTwo.SetPlayerID(GeneratePlayerID());
+
         playerOne
-            .SetScore(0, 0)
-            .SetScore(0, 1)
-            .SetScore(1, 0);
-
-        CheckPlayerHasWon(playerOne);
-
-        playerOne.ResetScore();
-        playerOne
-            .SetScore(0, 0)
-            .SetScore(0, 1)
-            .SetScore(0, 2);
-
-        CheckPlayerHasWon(playerOne);
-
-        playerOne.ResetScore();
-        playerOne
-            .SetScore(0, 0)
-            .SetScore(1, 0)
-            .SetScore(1, 1)
-            .SetScore(2, 0);
+            .AddScore(0, 0)
+            .AddScore(1, 0)
+            .AddScore(2, 0);
 
         CheckPlayerHasWon(playerOne);
         playerOne.ResetScore();
 
         playerOne
-            .SetScore(0, 0)
-            .SetScore(1, 1)
-            .SetScore(1, 2)
-            .SetScore(2, 2);
+            .AddScore(0, 0)
+            .AddScore(1, 0)
+            .AddScore(0, 2);
 
         CheckPlayerHasWon(playerOne);
         playerOne.ResetScore();
 
-        playerOne
-            .SetScore(0, 2)
-            .SetScore(1, 1)
-            .SetScore(2, 0)
-            .SetScore(2, 2);
+        playerTwo
+            .AddScore(0, 0)
+            .AddScore(1, 1)
+            .AddScore(2, 2);
 
-        CheckPlayerHasWon(playerOne);
-        playerOne.ResetScore();
+        CheckPlayerHasWon(playerTwo);
+        playerTwo.ResetScore();
 
-        playerOne
-            .SetScore(0, 2)
-            .SetScore(1, 1)
-            .SetScore(2, 2);
+        playerTwo
+            .AddScore(0, 0)
+            .AddScore(1, 0)
+            .AddScore(2, 2);
 
-        CheckPlayerHasWon(playerOne);
-        playerOne.ResetScore();
+        CheckPlayerHasWon(playerTwo);
+        playerTwo.ResetScore();
     }
 
     public void CheckPlayerHasWon(PlayerController player)
@@ -69,4 +57,32 @@ public class GameController : MonoBehaviour
         Debug.Log("Player has won: " + hasWon);
         player.DisplayGrid();
     }
+
+    public GameController CreatePlayerID(PlayerController player)
+    {
+        int newID = GeneratePlayerID();
+        player.SetPlayerID(newID);
+
+        return this;
+    }
+
+    #region PlayerID
+    public int GeneratePlayerID()
+    {
+        int newID = countPlayerID;
+        SetCountPlayerID(countPlayerID + 1);
+
+        return newID;
+    }
+    public GameController ResetCountPlayerID()
+    {
+        SetCountPlayerID(0);
+        return this;
+    }
+    public GameController SetCountPlayerID(int value)
+    {
+        countPlayerID = value;
+        return this;
+    }
+    #endregion
 }
