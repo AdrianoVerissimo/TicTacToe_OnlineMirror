@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class BoardController : MonoBehaviour
 {
     public static readonly int NoScoreValue = -1;
 
     private int[,] scoreArray = new int[3, 3];
     private int rowCount = 3;
     private int columnCount = 3;
-    private int playerID;
 
-    public PlayerController()
+    private void Start()
     {
         ResetScore();
     }
@@ -25,34 +24,34 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    public PlayerController AddScore(int rowPosition, int columnPosition) => SetScore(rowPosition, columnPosition, playerID);
-    public PlayerController RemoveScore(int rowPosition, int columnPosition) => SetScore(rowPosition, columnPosition, NoScoreValue);
-    private PlayerController SetScore(int rowPosition, int columnPosition, int value)
+    public BoardController AddScore(CharacterController player, int rowPosition, int columnPosition) => SetScore(rowPosition, columnPosition, player.PlayerID);
+    public BoardController RemoveScore(int rowPosition, int columnPosition) => SetScore(rowPosition, columnPosition, NoScoreValue);
+    private BoardController SetScore(int rowPosition, int columnPosition, int value)
     {
-        rowPosition = rowPosition >= rowCount? rowCount - 1 : rowPosition;
-        columnPosition = columnPosition >= columnCount? rowCount - 1 : columnPosition;
+        rowPosition = rowPosition >= rowCount ? rowCount - 1 : rowPosition;
+        columnPosition = columnPosition >= columnCount ? rowCount - 1 : columnPosition;
 
         scoreArray[rowPosition, columnPosition] = value;
 
         return this;
     }
-    public bool CheckHasWon()
+    public bool CheckHasWon(CharacterController player)
     {
         bool hasWon = false;
-        hasWon = CheckHasWon_Horizontal() || CheckHasWon_Vertical() || CheckHasWon_Diagonal();
+        hasWon = CheckHasWon_Horizontal(player) || CheckHasWon_Vertical(player) || CheckHasWon_Diagonal(player);
 
         return hasWon;
     }
 
-    public bool CheckHasWon_Horizontal()
+    public bool CheckHasWon_Horizontal(CharacterController player)
     {
-        return CheckHasWon_HorizontalVertical();
+        return CheckHasWon_HorizontalVertical(player);
     }
-    public bool CheckHasWon_Vertical()
+    public bool CheckHasWon_Vertical(CharacterController player)
     {
-        return CheckHasWon_HorizontalVertical(true);
+        return CheckHasWon_HorizontalVertical(player, true);
     }
-    private bool CheckHasWon_HorizontalVertical(bool checkVertical = false)
+    private bool CheckHasWon_HorizontalVertical(CharacterController player, bool checkVertical = false)
     {
         bool hasWon = false;
         int lineScoreCount = 0;
@@ -63,9 +62,9 @@ public class PlayerController : MonoBehaviour
             for (int j = 0; j < columnCount; j++)
             {
                 if (checkVertical)
-                    hasScore = scoreArray[i, j] == playerID;
+                    hasScore = scoreArray[i, j] == player.PlayerID;
                 else
-                    hasScore = scoreArray[j, i] == playerID;
+                    hasScore = scoreArray[j, i] == player.PlayerID;
 
                 if (hasScore)
                     lineScoreCount++;
@@ -85,13 +84,13 @@ public class PlayerController : MonoBehaviour
 
         return hasWon;
     }
-    public bool CheckHasWon_Diagonal()
+    public bool CheckHasWon_Diagonal(CharacterController player)
     {
-        bool hasWon = CheckHasWon_Diagonal(false) || CheckHasWon_Diagonal(true);
+        bool hasWon = CheckHasWon_Diagonal(player, false) || CheckHasWon_Diagonal(player, true);
 
         return hasWon;
     }
-    private bool CheckHasWon_Diagonal(bool reverse = false)
+    private bool CheckHasWon_Diagonal(CharacterController player, bool reverse = false)
     {
         bool hasWon = false;
         int lineScoreCount = 0;
@@ -100,9 +99,9 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < rowCount; i++)
         {
             if (!reverse)
-                hasScore = scoreArray[i, i] == playerID;
+                hasScore = scoreArray[i, i] == player.PlayerID;
             else
-                hasScore = scoreArray[i, rowCount - 1 - i] == playerID;
+                hasScore = scoreArray[i, rowCount - 1 - i] == player.PlayerID;
 
             if (hasScore)
                 lineScoreCount++;
@@ -132,9 +131,11 @@ public class PlayerController : MonoBehaviour
         Debug.Log(text);
     }
 
-    public PlayerController SetPlayerID(int playerID)
+    public void CheckPlayerHasWon(CharacterController player)
     {
-        this.playerID = playerID;
-        return this;
+        bool hasWon = CheckHasWon(player);
+
+        Debug.Log("Player has won: " + hasWon);
+        DisplayGrid();
     }
 }

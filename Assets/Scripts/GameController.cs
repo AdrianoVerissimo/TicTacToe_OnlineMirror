@@ -4,85 +4,24 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    private PlayerController playerOne;
-    private PlayerController playerTwo;
-
-    private int countPlayerID = 0;
+    [SerializeField] BoardController boardController;
+    [SerializeField] private CharacterController playerOne;
+    [SerializeField] private CharacterController playerTwo;
 
     private void Start()
     {
-        playerOne = new PlayerController();
-        playerOne.SetPlayerID(GeneratePlayerID());
+        Debug.Log("Start");
+        CharacterController.CreatePlayerID(playerOne);
+        CharacterController.CreatePlayerID(playerTwo);
 
-        playerTwo = new PlayerController();
-        playerTwo.SetPlayerID(GeneratePlayerID());
+        boardController
+            .AddScore(playerOne, 0, 0)
+            .AddScore(playerTwo, 1, 0)
+            .AddScore(playerOne, 0, 1)
+            .AddScore(playerTwo, 1, 1)
+            .AddScore(playerOne, 0, 2);
 
-        playerOne
-            .AddScore(0, 0)
-            .AddScore(1, 0)
-            .AddScore(2, 0);
-
-        CheckPlayerHasWon(playerOne);
-        playerOne.ResetScore();
-
-        playerOne
-            .AddScore(0, 0)
-            .AddScore(1, 0)
-            .AddScore(0, 2);
-
-        CheckPlayerHasWon(playerOne);
-        playerOne.ResetScore();
-
-        playerTwo
-            .AddScore(0, 0)
-            .AddScore(1, 1)
-            .AddScore(2, 2);
-
-        CheckPlayerHasWon(playerTwo);
-        playerTwo.ResetScore();
-
-        playerTwo
-            .AddScore(0, 0)
-            .AddScore(1, 0)
-            .AddScore(2, 2);
-
-        CheckPlayerHasWon(playerTwo);
-        playerTwo.ResetScore();
+        boardController.CheckPlayerHasWon(playerOne);
+        boardController.CheckPlayerHasWon(playerTwo);
     }
-
-    public void CheckPlayerHasWon(PlayerController player)
-    {
-        bool hasWon = player.CheckHasWon();
-
-        Debug.Log("Player has won: " + hasWon);
-        player.DisplayGrid();
-    }
-
-    public GameController CreatePlayerID(PlayerController player)
-    {
-        int newID = GeneratePlayerID();
-        player.SetPlayerID(newID);
-
-        return this;
-    }
-
-    #region PlayerID
-    public int GeneratePlayerID()
-    {
-        int newID = countPlayerID;
-        SetCountPlayerID(countPlayerID + 1);
-
-        return newID;
-    }
-    public GameController ResetCountPlayerID()
-    {
-        SetCountPlayerID(0);
-        return this;
-    }
-    public GameController SetCountPlayerID(int value)
-    {
-        countPlayerID = value;
-        return this;
-    }
-    #endregion
 }
