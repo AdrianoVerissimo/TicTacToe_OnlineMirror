@@ -2,25 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+public class GameController : Singleton<GameController>
 {
-    [SerializeField] BoardController boardController;
+    [SerializeField] private BoardController boardController;
     [SerializeField] private CharacterController playerOne;
     [SerializeField] private CharacterController playerTwo;
 
-    private void Start()
+    public override void Awake()
     {
+        base.Awake();
+
         CharacterController.GeneratePlayerID(playerOne);
         CharacterController.GeneratePlayerID(playerTwo);
+    }
 
-        boardController
-            .AddScore(playerOne, 0, 0)
-            .AddScore(playerTwo, 1, 0)
-            .AddScore(playerOne, 0, 1)
-            .AddScore(playerTwo, 1, 1)
-            .AddScore(playerOne, 0, 2);
+    public static void ScorePoint(CharacterController player, int rowPosition, int columnPosition)
+    {
+        Instance.boardController.AddScore(player, rowPosition, columnPosition);
+    }
 
-        boardController.DisplayPlayerHasWon(playerOne);
-        boardController.DisplayPlayerHasWon(playerTwo);
+    public static CharacterController GetCurrentPlayer()
+    {
+        return Instance.playerOne;
+    }
+
+    public static void DisplayGrid()
+    {
+        Instance.boardController.DisplayGrid();
     }
 }
