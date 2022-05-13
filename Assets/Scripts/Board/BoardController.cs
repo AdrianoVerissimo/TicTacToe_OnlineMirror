@@ -11,8 +11,12 @@ public class BoardController : MonoBehaviour
 
     public int FreeSpacesCount { get; private set; } = 0;
 
+    [SerializeField] private GameObject boardButtonsHolder;
+    private BoardButton[] boardButtons;
+
     private void Start()
     {
+        LoadBoardButtons();
         ResetFreeSpacesCount();
         ResetScore();
     }
@@ -133,7 +137,7 @@ public class BoardController : MonoBehaviour
         FreeSpacesCount = value;
     }
 
-    public void DisplayGrid()
+    public void Debug_DisplayGrid()
     {
         string text = "";
         for (int i = 0; i < rowCount; i++)
@@ -147,11 +151,27 @@ public class BoardController : MonoBehaviour
         Debug.Log(text);
     }
 
-    public void DisplayPlayerHasWon(CharacterController player)
+    public void Debug_DisplayPlayerHasWon(CharacterController player)
     {
         bool hasWon = HasPlayerWon(player);
 
         Debug.Log("Player has won: " + hasWon);
-        DisplayGrid();
+        Debug_DisplayGrid();
+    }
+
+    private void LoadBoardButtons()
+    {
+        boardButtons = boardButtonsHolder.GetComponentsInChildren<BoardButton>();
+    }
+    public void ResetButtonsText()
+    {
+        foreach (var button in boardButtons)
+            button.ResetText();
+    }
+    public void ResetBoard()
+    {
+        ResetScore();
+        ResetFreeSpacesCount();
+        ResetButtonsText();
     }
 }

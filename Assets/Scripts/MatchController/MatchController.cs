@@ -57,7 +57,6 @@ public class MatchController : SingletonDestroyable<MatchController>
 
     public static void StartTurn()
     {
-        Debug.Log("Player " + ActivePlayer.PlayerID + " turn.");
         Instance.RunEvents_StartTurn();
     }
     public static void EndTurn()
@@ -87,7 +86,9 @@ public class MatchController : SingletonDestroyable<MatchController>
     }
     public static void RestartMatch()
     {
-
+        Instance.boardController.ResetBoard();
+        SetActivePlayer(Instance.playerOne);
+        StartMatch();
     }
     public static void EndMatch()
     {
@@ -106,7 +107,6 @@ public class MatchController : SingletonDestroyable<MatchController>
                 break;
         }
 
-        Debug.Log(endText);
         Instance.RunEvents_EndMatch();
     }
 

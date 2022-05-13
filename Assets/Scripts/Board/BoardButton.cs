@@ -6,10 +6,14 @@ using System.Collections;
 
 public class BoardButton : MonoBehaviour, IPointerClickHandler
 {
+    [SerializeField] private Text buttonText;
+
     private IBoardButton_OnClick[] clickEvents;
+    private string starterButtonText;
 
     private void Awake()
     {
+        InitButtonText();
         LoadClickEvents();
     }
 
@@ -17,6 +21,8 @@ public class BoardButton : MonoBehaviour, IPointerClickHandler
     {
         RunClickEvents();
     }
+
+    #region Events
 
     private void LoadClickEvents()
     {
@@ -32,4 +38,23 @@ public class BoardButton : MonoBehaviour, IPointerClickHandler
             e.BoardButton_OnClick();
         }
     }
+
+    #endregion
+
+    #region Text
+
+    private void InitButtonText()
+    {
+        starterButtonText = buttonText.text;
+    }
+    public void SetText(string text)
+    {
+        buttonText.text = text;
+    }
+    public void ResetText()
+    {
+        SetText(starterButtonText);
+    }
+
+    #endregion
 }
