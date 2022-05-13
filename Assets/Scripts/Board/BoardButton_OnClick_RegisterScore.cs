@@ -14,8 +14,6 @@ public class BoardButton_OnClick_RegisterScore : MonoBehaviour, IBoardButton_OnC
 
         buttonText.text = player.PlayerID.ToString();
 
-        MatchController.DisplayGrid();
-
         MatchController.EndTurn();
     }
 }

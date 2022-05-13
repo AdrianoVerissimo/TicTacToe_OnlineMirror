@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class MatchController : SingletonDestroyable<MatchController>
 {
+    public enum MatchStatus
+    {
+        PLAYING, WON, DRAW, GIVE_UP
+    }
+    public static MatchStatus CurrentMatchStatus;
+
     [SerializeField] private BoardController boardController;
     [SerializeField] private CharacterController playerOne;
     [SerializeField] private CharacterController playerTwo;
@@ -18,35 +24,41 @@ public class MatchController : SingletonDestroyable<MatchController>
         CharacterController.GeneratePlayerID(playerTwo);
 
         SetActivePlayer(playerOne);
+
+        StartMatch();
     }
+
+    #region Score
 
     public static void ScorePoint(CharacterController player, int rowPosition, int columnPosition)
     {
         Instance.boardController.AddScore(player, rowPosition, columnPosition);
     }
+    
+    #endregion
 
-    public static void DisplayGrid()
-    {
-        Instance.boardController.DisplayGrid();
-    }
+    #region Player
 
     public static void SetActivePlayer(CharacterController player)
     {
         ActivePlayer = player;
     }
 
+    #endregion
+
+    #region Gameplay
+
     public static void BeginTurn()
     {
-
+        Debug.Log("Player " + ActivePlayer.PlayerID + " turn.");
     }
     public static void EndTurn()
     {
-        bool hasWinner = HasWinner();
-        if (hasWinner)
-        {
-            EndMatch();
+        Instance.boardController.RemoveFreeSpacesCount(1);
+        Debug.Log("FreeSpacesCount: " + Instance.boardController.FreeSpacesCount);
+        bool matchEnded = CheckMatchEnded();
+        if (matchEnded)
             return;
-        }
 
         ChangeTurnPlayer();
         BeginTurn();
@@ -59,12 +71,9 @@ public class MatchController : SingletonDestroyable<MatchController>
         else
             SetActivePlayer(Instance.playerOne);
     }
-    public static bool HasWinner()
-    {
-        return false;
-    }
     public static void StartMatch()
     {
+        CurrentMatchStatus = MatchStatus.PLAYING;
         BeginTurn();
     }
     public static void RestartMatch()
@@ -72,7 +81,42 @@ public class MatchController : SingletonDestroyable<MatchController>
 
     }
     public static void EndMatch()
-    { 
+    {
+        string endText = "";
+        switch (CurrentMatchStatus)
+        {
+            case MatchStatus.WON:
+                endText = "Player " + ActivePlayer.PlayerID + " is the winner!!!";
+                break;
+            case MatchStatus.DRAW:
+                endText = "Draw game!";
+                break;
+            case MatchStatus.GIVE_UP:
+                break;
+            default:
+                break;
+        }
 
+        Debug.Log(endText);
     }
+
+    public static bool CheckMatchEnded()
+    {
+        bool hasWinner = Instance.boardController.HasPlayerWon(ActivePlayer);
+        bool isDraw = !hasWinner && Instance.boardController.FreeSpacesCount == 0;
+
+        if (hasWinner || isDraw)
+        {
+            if (hasWinner)
+                CurrentMatchStatus = MatchStatus.WON;
+            else if (isDraw)
+                CurrentMatchStatus = MatchStatus.DRAW;
+
+            EndMatch();
+        }
+
+        return hasWinner;
+    }
+
+    #endregion
 }

@@ -9,8 +9,11 @@ public class BoardController : MonoBehaviour
     private int rowCount = 3;
     private int columnCount = 3;
 
+    public int FreeSpacesCount { get; private set; } = 0;
+
     private void Start()
     {
+        ResetFreeSpacesCount();
         ResetScore();
     }
 
@@ -115,6 +118,19 @@ public class BoardController : MonoBehaviour
         }
 
         return hasWon;
+    }
+
+    private void ResetFreeSpacesCount()
+    {
+        SetFreeSpacesCount(rowCount * columnCount);
+    }
+    public void RemoveFreeSpacesCount(int removeValue = 1)
+    {
+        SetFreeSpacesCount(FreeSpacesCount - removeValue);
+    }
+    public void SetFreeSpacesCount(int value)
+    {
+        FreeSpacesCount = value;
     }
 
     public void DisplayGrid()
