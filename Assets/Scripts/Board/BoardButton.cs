@@ -7,6 +7,7 @@ using System.Collections;
 public class BoardButton : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Text buttonText;
+    [SerializeField] private Button button;
 
     private IBoardButton_OnClick[] clickEvents;
     private string starterButtonText;
@@ -19,6 +20,9 @@ public class BoardButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!button.IsInteractable())
+            return;
+
         RunClickEvents();
     }
 
@@ -54,6 +58,19 @@ public class BoardButton : MonoBehaviour, IPointerClickHandler
     public void ResetText()
     {
         SetText(starterButtonText);
+    }
+
+    #endregion
+
+    #region Block
+
+    public void EnableInteraction(bool enable = true)
+    {
+        button.interactable = enable;
+    }
+    public void DisableInteraction()
+    {
+        EnableInteraction(false);
     }
 
     #endregion

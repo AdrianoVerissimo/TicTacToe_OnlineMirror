@@ -168,6 +168,13 @@ public class BoardController : MonoBehaviour
         foreach (var button in boardButtons)
             button.ResetText();
     }
+    public void EnableAllButtons(bool enable = true)
+    {
+        foreach (var button in boardButtons)
+            button.EnableInteraction(enable);
+    }
+    public void DisableAllButtons() => EnableAllButtons(false);
+
     public void ResetBoard()
     {
         ResetScore();

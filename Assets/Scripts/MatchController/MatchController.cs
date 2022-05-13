@@ -88,6 +88,7 @@ public class MatchController : SingletonDestroyable<MatchController>
     {
         Instance.boardController.ResetBoard();
         SetActivePlayer(Instance.playerOne);
+        Instance.boardController.EnableAllButtons();
         StartMatch();
     }
     public static void EndMatch()
@@ -106,6 +107,8 @@ public class MatchController : SingletonDestroyable<MatchController>
             default:
                 break;
         }
+
+        Instance.boardController.DisableAllButtons();
 
         Instance.RunEvents_EndMatch();
     }
