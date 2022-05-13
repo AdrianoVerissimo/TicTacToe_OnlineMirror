@@ -16,9 +16,16 @@ public class MatchController : SingletonDestroyable<MatchController>
 
     public static CharacterController ActivePlayer { get; private set; }
 
+    private IMatchController_OnStartMatch[] OnStartMatchEvents;
+    private IMatchController_OnEndMatch[] OnEndMatchEvents;
+    private IMatchController_OnStartTurn[] OnStartTurnEvents;
+    private IMatchController_OnEndTurn[] OnEndTurnEvents;
+
     public override void Awake()
     {
         base.Awake();
+
+        LoadAllEvents();
 
         CharacterController.GeneratePlayerID(playerOne);
         CharacterController.GeneratePlayerID(playerTwo);
@@ -48,20 +55,21 @@ public class MatchController : SingletonDestroyable<MatchController>
 
     #region Gameplay
 
-    public static void BeginTurn()
+    public static void StartTurn()
     {
         Debug.Log("Player " + ActivePlayer.PlayerID + " turn.");
+        Instance.RunEvents_StartTurn();
     }
     public static void EndTurn()
     {
         Instance.boardController.RemoveFreeSpacesCount(1);
-        Debug.Log("FreeSpacesCount: " + Instance.boardController.FreeSpacesCount);
         bool matchEnded = CheckMatchEnded();
         if (matchEnded)
             return;
 
         ChangeTurnPlayer();
-        BeginTurn();
+        Instance.RunEvents_EndTurn();
+        StartTurn();
     }
     public static void ChangeTurnPlayer()
     {
@@ -74,7 +82,8 @@ public class MatchController : SingletonDestroyable<MatchController>
     public static void StartMatch()
     {
         CurrentMatchStatus = MatchStatus.PLAYING;
-        BeginTurn();
+        Instance.RunEvents_StartMatch();
+        StartTurn();
     }
     public static void RestartMatch()
     {
@@ -98,6 +107,7 @@ public class MatchController : SingletonDestroyable<MatchController>
         }
 
         Debug.Log(endText);
+        Instance.RunEvents_EndMatch();
     }
 
     public static bool CheckMatchEnded()
@@ -116,6 +126,43 @@ public class MatchController : SingletonDestroyable<MatchController>
         }
 
         return hasWinner;
+    }
+
+    #endregion
+
+    #region Events
+
+    private void LoadAllEvents()
+    {
+        LoadEvents_StartMatch();
+        LoadEvents_EndMatch();
+        LoadEvents_StartTurn();
+        LoadEvents_EndTurn();
+    }
+    private void LoadEvents_StartMatch() => OnStartMatchEvents = GetComponents<IMatchController_OnStartMatch>();
+    private void LoadEvents_EndMatch() => OnEndMatchEvents = GetComponents<IMatchController_OnEndMatch>();
+    private void LoadEvents_StartTurn() => OnStartTurnEvents = GetComponents<IMatchController_OnStartTurn>();
+    private void LoadEvents_EndTurn() => OnEndTurnEvents = GetComponents<IMatchController_OnEndTurn>();
+
+    private void RunEvents_StartMatch()
+    {
+        foreach (var e in OnStartMatchEvents)
+            e.OnStartMatch();
+    }
+    private void RunEvents_EndMatch()
+    {
+        foreach (var e in OnEndMatchEvents)
+            e.OnEndMatch();
+    }
+    private void RunEvents_StartTurn()
+    {
+        foreach (var e in OnStartTurnEvents)
+            e.OnStartTurn();
+    }
+    private void RunEvents_EndTurn()
+    {
+        foreach (var e in OnEndTurnEvents)
+            e.OnEndTurn();
     }
 
     #endregion
