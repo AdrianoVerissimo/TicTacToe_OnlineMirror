@@ -9,11 +9,13 @@ public class BoardButton_OnClick_RegisterScore : MonoBehaviour, IBoardButton_OnC
 
     public void BoardButton_OnClick()
     {
-        CharacterController player = GameController.GetCurrentPlayer();
-        GameController.ScorePoint(player, (int)boardPosition.x, (int)boardPosition.y);
+        CharacterController player = MatchController.ActivePlayer;
+        MatchController.ScorePoint(player, (int)boardPosition.x, (int)boardPosition.y);
 
         buttonText.text = player.PlayerID.ToString();
 
-        GameController.DisplayGrid();
+        MatchController.DisplayGrid();
+
+        MatchController.EndTurn();
     }
 }
