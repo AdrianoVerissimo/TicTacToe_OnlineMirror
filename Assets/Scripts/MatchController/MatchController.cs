@@ -21,18 +21,16 @@ public class MatchController : SingletonDestroyable<MatchController>
     private IMatchController_OnStartTurn[] OnStartTurnEvents;
     private IMatchController_OnEndTurn[] OnEndTurnEvents;
 
+    private bool allPlayersConnected = false;
+
     public override void Awake()
     {
         base.Awake();
 
         LoadAllEvents();
 
-        CharacterController.GeneratePlayerID(playerOne);
-        CharacterController.GeneratePlayerID(playerTwo);
-
-        SetActivePlayer(playerOne);
-
-        StartMatch();
+        if (allPlayersConnected)
+            StartMatch();
     }
 
     #region Score
@@ -81,6 +79,11 @@ public class MatchController : SingletonDestroyable<MatchController>
     }
     public static void StartMatch()
     {
+        CharacterController.GeneratePlayerID(Instance.playerOne);
+        CharacterController.GeneratePlayerID(Instance.playerTwo);
+
+        SetActivePlayer(Instance.playerOne);
+
         CurrentMatchStatus = MatchStatus.PLAYING;
         Instance.RunEvents_StartMatch();
         StartTurn();
