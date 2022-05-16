@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class MatchController_OnEndMatch_UpdateUI : MonoBehaviour, IMatchController_OnEndMatch
 {
     [SerializeField] private TextMeshProUGUI descriptionText;
+    public Text textTest;
 
     public void OnEndMatch()
     {

@@ -63,6 +63,7 @@ public class MatchController : SingletonDestroyable<MatchController>
     {
         Instance.boardController.RemoveFreeSpacesCount(1);
         bool matchEnded = CheckMatchEnded();
+        Debug.Log("match ended: " + matchEnded);
         if (matchEnded)
             return;
 
@@ -117,8 +118,9 @@ public class MatchController : SingletonDestroyable<MatchController>
     {
         bool hasWinner = Instance.boardController.HasPlayerWon(ActivePlayer);
         bool isDraw = !hasWinner && Instance.boardController.FreeSpacesCount == 0;
+        bool hasEnded = hasWinner || isDraw;
 
-        if (hasWinner || isDraw)
+        if (hasEnded)
         {
             if (hasWinner)
                 CurrentMatchStatus = MatchStatus.WON;
@@ -128,7 +130,7 @@ public class MatchController : SingletonDestroyable<MatchController>
             EndMatch();
         }
 
-        return hasWinner;
+        return hasEnded;
     }
 
     #endregion
