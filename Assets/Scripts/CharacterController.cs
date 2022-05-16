@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
+using Mirror;
 
-public class CharacterController : MonoBehaviour
+public class CharacterController : NetworkBehaviour
 {
     public int PlayerID { get; private set; }
 

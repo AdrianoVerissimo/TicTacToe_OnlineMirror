@@ -61,7 +61,7 @@ public class MatchController : SingletonDestroyable<MatchController>
     {
         Instance.boardController.RemoveFreeSpacesCount(1);
         bool matchEnded = CheckMatchEnded();
-        Debug.Log("match ended: " + matchEnded);
+
         if (matchEnded)
             return;
 
