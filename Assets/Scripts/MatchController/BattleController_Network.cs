@@ -25,7 +25,25 @@ public class BattleController_Network : NetworkBehaviour
         networkManager = NetworkManager.singleton;
     }
 
-    
+    public void Network_RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
+    {
+        if (isServer)
+            RegisterPlayerOnMatch(playerNetworkIdentity);
+        else
+            Cmd_RegisterPlayerOnMatch(playerNetworkIdentity);
+    }
+    private void RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
+    {
+        CharacterController player = playerNetworkIdentity.GetComponent<CharacterController>();
+
+        if (playerOne == null)
+            playerOne = player;
+        else if (playerTwo == null)
+            playerTwo = player;
+    }
+
+    [Command(channel = 0, requiresAuthority = false)]
+    private void Cmd_RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity) => RegisterPlayerOnMatch(playerNetworkIdentity);
 
     public void ShowPlayers()
     {

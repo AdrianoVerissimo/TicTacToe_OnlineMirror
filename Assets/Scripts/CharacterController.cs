@@ -52,7 +52,7 @@ public class CharacterController : NetworkBehaviour
 
         Network_CreateBattleControllerNetwork();
 
-        Network_RegisterPlayerOnMatch(netIdentity);
+        BattleController_Network.Instance.Network_RegisterPlayerOnMatch(netIdentity);
     }
 
     public void Network_CreateBattleControllerNetwork()
@@ -64,6 +64,9 @@ public class CharacterController : NetworkBehaviour
     }
     private void CreateBattleControllerNetwork()
     {
+        if (!isServer)
+            return;
+
         if (BattleController_Network.Instance == null)
         {
             GameObject battleController_NetworkInstance = Instantiate(battleController_NetworkPrefab);
@@ -79,29 +82,7 @@ public class CharacterController : NetworkBehaviour
 
 
 
-    public void Network_RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
-    {
-        if (isServer)
-            RegisterPlayerOnMatch(playerNetworkIdentity);
-        else
-            Cmd_RegisterPlayerOnMatch(playerNetworkIdentity);
-    }
-    public void RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
-    {
-        CharacterController player = playerNetworkIdentity.GetComponent<CharacterController>();
-
-        if (BattleController_Network.Instance.playerOne == null)
-            BattleController_Network.Instance.playerOne = player;
-        else if (BattleController_Network.Instance.playerTwo == null)
-            BattleController_Network.Instance.playerTwo = player;
-    }
-
-    [Command(channel = 0, requiresAuthority = false)]
-    private void Cmd_RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
-    {
-        Debug.Log("Cmd_RegisterPlayerOnMatch");
-        RegisterPlayerOnMatch(playerNetworkIdentity);
-    }
+    
 
     #endregion
 }
