@@ -142,7 +142,7 @@ public class BattleController : SingletonDestroyable<BattleController>
         return hasEnded;
     }
 
-    public void EnableRestartMatchButton(bool enable = true) => restartMatchButton.enabled = enable;
+    public void EnableRestartMatchButton(bool enable = true) => restartMatchButton.gameObject.SetActive(enable);
     public void DisableRestartMatchButton() => EnableRestartMatchButton(false);
 
     public void EnableGameplay(bool enable = true)
