@@ -14,9 +14,13 @@ public class BoardController : MonoBehaviour
     [SerializeField] private GameObject boardButtonsHolder;
     private BoardButton[] boardButtons;
 
-    private void Start()
+    private void Awake()
     {
         LoadBoardButtons();
+    }
+
+    private void Start()
+    {
         ResetFreeSpacesCount();
         ResetScore();
     }

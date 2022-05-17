@@ -29,10 +29,14 @@ public class BattleController : SingletonDestroyable<BattleController>
         base.Awake();
 
         LoadAllEvents();
-        DisableGameplay();
 
         if (allPlayersConnected)
             StartMatch();
+    }
+
+    private void Start()
+    {
+        DisableGameplay();
     }
 
     #region Score
@@ -81,8 +85,8 @@ public class BattleController : SingletonDestroyable<BattleController>
     }
     public static void StartMatch()
     {
-        //CharacterController.GeneratePlayerID(Instance.playerOne_NetworkIdentity);
-        //CharacterController.GeneratePlayerID(Instance.playerTwo_NetworkIdentity);
+        //CharacterController.GeneratePlayerID(Instance.playerOne.netIdentity);
+        //CharacterController.GeneratePlayerID(Instance.playerTwo.netIdentity);
 
         SetActivePlayer(Instance.playerOne);
 
