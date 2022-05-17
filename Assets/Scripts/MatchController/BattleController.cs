@@ -1,20 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Mirror;
 
-public class MatchController : SingletonDestroyable<MatchController>
+public class BattleController : SingletonDestroyable<BattleController>
 {
     public enum MatchStatus
     {
         PLAYING, WON, DRAW, GIVE_UP
     }
     public static MatchStatus CurrentMatchStatus;
+    public static CharacterController ActivePlayer { get; private set; }
 
     [SerializeField] private BoardController boardController;
-    [SerializeField] private CharacterController playerOne;
-    [SerializeField] private CharacterController playerTwo;
+    [SerializeField] public CharacterController playerOne;
+    [SerializeField] public CharacterController playerTwo;
 
-    public static CharacterController ActivePlayer { get; private set; }
+    [SerializeField] private Button restartMatchButton;
 
     private IMatchController_OnStartMatch[] OnStartMatchEvents;
     private IMatchController_OnEndMatch[] OnEndMatchEvents;
@@ -28,6 +29,7 @@ public class MatchController : SingletonDestroyable<MatchController>
         base.Awake();
 
         LoadAllEvents();
+        DisableGameplay();
 
         if (allPlayersConnected)
             StartMatch();
@@ -79,8 +81,8 @@ public class MatchController : SingletonDestroyable<MatchController>
     }
     public static void StartMatch()
     {
-        CharacterController.GeneratePlayerID(Instance.playerOne);
-        CharacterController.GeneratePlayerID(Instance.playerTwo);
+        //CharacterController.GeneratePlayerID(Instance.playerOne_NetworkIdentity);
+        //CharacterController.GeneratePlayerID(Instance.playerTwo_NetworkIdentity);
 
         SetActivePlayer(Instance.playerOne);
 
@@ -135,6 +137,22 @@ public class MatchController : SingletonDestroyable<MatchController>
 
         return hasEnded;
     }
+
+    public void EnableRestartMatchButton(bool enable = true) => restartMatchButton.enabled = enable;
+    public void DisableRestartMatchButton() => EnableRestartMatchButton(false);
+
+    public void EnableGameplay(bool enable = true)
+    {
+        boardController.EnableAllButtons(enable);
+        EnableRestartMatchButton(enable);
+    }
+    public void DisableGameplay() => EnableGameplay(false);
+
+    #endregion
+
+    #region Players
+
+    
 
     #endregion
 

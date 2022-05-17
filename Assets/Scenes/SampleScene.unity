@@ -470,6 +470,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7993160713422411265, guid: 8e1769395521c0644afb3081933d97c7, type: 3}
   m_PrefabInstance: {fileID: 7993160712659074806}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &962565942 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7993160713534492115, guid: 8e1769395521c0644afb3081933d97c7, type: 3}
+  m_PrefabInstance: {fileID: 7993160712659074806}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1079535877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -593,7 +604,7 @@ GameObject:
   - component: {fileID: 1365430924}
   - component: {fileID: 1365430925}
   m_Layer: 0
-  m_Name: MatchController
+  m_Name: BattleController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -628,6 +639,7 @@ MonoBehaviour:
   boardController: {fileID: 769841734}
   playerOne: {fileID: 0}
   playerTwo: {fileID: 0}
+  restartMatchButton: {fileID: 962565942}
 --- !u!114 &1365430924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -866,7 +878,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1679137753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Script: {fileID: 11500000, guid: 33cc7295af6cdee4cb61da2c980172da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
@@ -882,7 +894,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 4593856902757315596, guid: 601435a41fb6feb48a7c348c097faae5, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 8062484733320104316, guid: 2a94da9ef243e4f4bac18ccfd0c934f4, type: 3}
 --- !u!4 &1679137756
 Transform:
   m_ObjectHideFlags: 0
