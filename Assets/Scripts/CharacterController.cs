@@ -53,14 +53,13 @@ public class CharacterController : NetworkBehaviour
         Network_CreateBattleControllerNetwork();
 
         BattleController_Network.Instance.Network_RegisterPlayerOnMatch(netIdentity);
+        BattleController_Network.Instance.Network_ShouldStartMatch();
     }
 
     public void Network_CreateBattleControllerNetwork()
     {
         if (isServer)
-        {
             Cmd_CreateBattleControllerNetwork();
-        }
     }
     private void CreateBattleControllerNetwork()
     {
@@ -79,10 +78,6 @@ public class CharacterController : NetworkBehaviour
     {
         CreateBattleControllerNetwork();
     }
-
-
-
-    
 
     #endregion
 }

@@ -59,4 +59,33 @@ public class BattleController_Network : NetworkBehaviour
     }
 
     public void RemovePlayers() => playerOne = playerTwo = null;
+
+    public bool CheckAllPlayersConnected()
+    {
+        bool allPlayersConnected = playerOne != null && playerTwo != null;
+        return allPlayersConnected;
+    }
+    public void Network_ShouldStartMatch()
+    {
+        if (isServer)
+            ShouldStartMatch();
+        else
+            Cmd_ShouldStartMatch();
+    }
+    private void ShouldStartMatch()
+    {
+        bool allPlayersConnected = CheckAllPlayersConnected();
+        bool canStartMatch = allPlayersConnected;
+
+        Debug.Log("can start match: " + canStartMatch);
+
+        if (!canStartMatch)
+            return;
+    }
+    [Command(channel = 0, requiresAuthority = false)]
+    private void Cmd_ShouldStartMatch()
+    {
+        ShouldStartMatch();
+    }
+
 }

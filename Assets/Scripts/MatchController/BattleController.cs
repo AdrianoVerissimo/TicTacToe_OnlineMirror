@@ -89,6 +89,7 @@ public class BattleController : SingletonDestroyable<BattleController>
         //CharacterController.GeneratePlayerID(Instance.playerTwo.netIdentity);
 
         SetActivePlayer(Instance.playerOne);
+        Instance.EnableGameplay();
 
         CurrentMatchStatus = MatchStatus.PLAYING;
         Instance.RunEvents_StartMatch();
