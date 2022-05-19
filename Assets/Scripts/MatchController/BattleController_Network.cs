@@ -113,4 +113,37 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.Instance.RunEvents_StartMatch();
         BattleController.StartTurn();
     }
+
+    public void Network_ScorePoint(int positionX, int positionY)
+    {
+        if (isServer)
+            TryScorePoint(positionX, positionY);
+        else
+            Cmd_TryScorePoint(positionX, positionY);
+    }
+    private void TryScorePoint(int positionX, int positionY)
+    {
+        bool canScore = true;
+        if (!canScore)
+            return;
+
+        CharacterController activePlayer = BattleController.ActivePlayer;
+        Rpc_ScorePoint(activePlayer.netIdentity, positionX, positionY);
+    }
+
+    [Command(channel = 0, requiresAuthority = false)]
+    private void Cmd_TryScorePoint(int positionX, int positionY)
+    {
+        TryScorePoint(positionX, positionY);
+    }
+
+    [ClientRpc]
+    private void Rpc_ScorePoint(NetworkIdentity playerNet, int positionX, int positionY)
+    {
+        BoardController boardController = BattleController.Instance.BoardController;
+        boardController.Debug_DisplayGrid();
+        CharacterController player = playerNet.GetComponent<CharacterController>();
+        BattleController.ScorePoint(player, positionX, positionY);
+        boardController.Debug_DisplayGrid();
+    }
 }

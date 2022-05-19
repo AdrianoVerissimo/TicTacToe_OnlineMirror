@@ -11,6 +11,7 @@ public class BattleController : SingletonDestroyable<BattleController>
     public static MatchStatus CurrentMatchStatus;
     public static CharacterController ActivePlayer { get; private set; }
 
+    public BoardController BoardController { get { return boardController; } }
     [SerializeField] private BoardController boardController;
     [SerializeField] public CharacterController playerOne;
     [SerializeField] public CharacterController playerTwo;
