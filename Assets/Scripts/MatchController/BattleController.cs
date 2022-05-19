@@ -85,8 +85,8 @@ public class BattleController : SingletonDestroyable<BattleController>
     }
     public static void StartMatch()
     {
-        //CharacterController.GeneratePlayerID(Instance.playerOne.netIdentity);
-        //CharacterController.GeneratePlayerID(Instance.playerTwo.netIdentity);
+        CharacterController.GeneratePlayerID(Instance.playerOne);
+        CharacterController.GeneratePlayerID(Instance.playerTwo);
 
         SetActivePlayer(Instance.playerOne);
         Instance.EnableGameplay();

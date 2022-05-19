@@ -3,7 +3,7 @@ using Mirror;
 
 public class BattleController_Network : NetworkBehaviour
 {
-    private BattleController matchController;
+    private BattleController battleController;
     private NetworkManager networkManager;
 
     [SyncVar] public CharacterController playerOne;
@@ -21,7 +21,7 @@ public class BattleController_Network : NetworkBehaviour
 
     private void Start()
     {
-        matchController = GetComponent<BattleController>();
+        battleController = GetComponent<BattleController>();
         networkManager = NetworkManager.singleton;
     }
 
@@ -74,13 +74,19 @@ public class BattleController_Network : NetworkBehaviour
     }
     private void ShouldStartMatch()
     {
+        if (!isServer)
+        {
+            Debug.Log("Error: can only ask to start a match by the server.");
+            return;
+        }
+
         bool allPlayersConnected = CheckAllPlayersConnected();
         bool canStartMatch = allPlayersConnected;
 
-        Debug.Log("can start match: " + canStartMatch);
-
         if (!canStartMatch)
             return;
+
+        StartMatch();
     }
     [Command(channel = 0, requiresAuthority = false)]
     private void Cmd_ShouldStartMatch()
@@ -88,4 +94,15 @@ public class BattleController_Network : NetworkBehaviour
         ShouldStartMatch();
     }
 
+    private void StartMatch()
+    {
+        LoadPlayers(playerOne.netIdentity, playerTwo.netIdentity);
+    }
+
+    [ClientRpc]
+    private void LoadPlayers(NetworkIdentity playerOne, NetworkIdentity playerTwo)
+    {
+        BattleController.Instance.playerOne = playerOne.gameObject.GetComponent<CharacterController>();
+        BattleController.Instance.playerTwo = playerTwo.gameObject.GetComponent<CharacterController>();
+    }
 }

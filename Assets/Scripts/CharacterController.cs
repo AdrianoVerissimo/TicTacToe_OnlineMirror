@@ -21,11 +21,10 @@ public class CharacterController : NetworkBehaviour
         return this;
     }
 
-    public static void GeneratePlayerID(NetworkIdentity player)
+    public static void GeneratePlayerID(CharacterController player)
     {
-        CharacterController character = player.gameObject.GetComponent<CharacterController>();
         int newID = GetNewPlayerID();
-        character.SetPlayerID(newID);
+        player.SetPlayerID(newID);
     }
     private static int GetNewPlayerID()
     {
