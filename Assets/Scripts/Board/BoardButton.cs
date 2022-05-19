@@ -6,6 +6,8 @@ using System.Collections;
 
 public class BoardButton : MonoBehaviour, IPointerClickHandler
 {
+    public Vector2 BoardPosition { get { return boardPosition; } }
+    [SerializeField] private Vector2 boardPosition = new Vector2(0, 0);
     [SerializeField] private Text buttonText;
     [SerializeField] private Button button;
 

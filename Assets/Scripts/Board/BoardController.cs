@@ -141,6 +141,18 @@ public class BoardController : MonoBehaviour
         FreeSpacesCount = value;
     }
 
+    public BoardButton GetButtonByCoordinates(int positionX, int positionY)
+    {
+        foreach (var boardButton in boardButtons)
+        {
+            bool isTargetButton = boardButton.BoardPosition.x == positionX && boardButton.BoardPosition.y == positionY;
+            if (isTargetButton)
+                return boardButton;
+        }
+
+        return null;
+    }
+
     public void Debug_DisplayGrid()
     {
         string text = "";

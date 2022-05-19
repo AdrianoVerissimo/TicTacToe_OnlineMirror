@@ -4,8 +4,14 @@ using System.Collections;
 
 public class BoardButton_OnClick_RegisterScore : MonoBehaviour, IBoardButton_OnClick
 {
-    [SerializeField] private Vector2 boardPosition = new Vector2(0, 0);
     [SerializeField] private Text buttonText;
+
+    private BoardButton boardButton;
+
+    private void Awake()
+    {
+        boardButton = GetComponent<BoardButton>();
+    }
 
     public void BoardButton_OnClick()
     {
@@ -22,22 +28,19 @@ public class BoardButton_OnClick_RegisterScore : MonoBehaviour, IBoardButton_OnC
     public void RegisterScore()
     {
         CharacterController player = BattleController.ActivePlayer;
-        BattleController.ScorePoint(player, (int)boardPosition.x, (int)boardPosition.y);
+        BattleController.ScorePoint(player, (int)boardButton.BoardPosition.x, (int)boardButton.BoardPosition.y);
 
-        buttonText.text = player.PlayerID.ToString();
+        UpdateUI(player);
 
         BattleController.EndTurn();
     }
 
     public void Network_RegisterScore()
     {
-        BattleController_Network.Instance.Network_ScorePoint((int)boardPosition.x, (int)boardPosition.y);
+        BattleController_Network.Instance.Network_ScorePoint((int)boardButton.BoardPosition.x, (int)boardButton.BoardPosition.y);
     }
-
-    /**
-     * botão clicado
-     * mandar informação de que foi clicado para BattleController_Network
-     * BattleController_Network receber o botão clicado e registrar score pelo lado servidor
-     * BattleController_Network atualizar score e visualização do botão para todos os clientes
-     * */
+    public void UpdateUI(CharacterController player)
+    {
+        buttonText.text = player.PlayerID.ToString();
+    }
 }

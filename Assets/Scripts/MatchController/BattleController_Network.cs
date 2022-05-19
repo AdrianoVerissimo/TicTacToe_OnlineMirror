@@ -145,5 +145,8 @@ public class BattleController_Network : NetworkBehaviour
         CharacterController player = playerNet.GetComponent<CharacterController>();
         BattleController.ScorePoint(player, positionX, positionY);
         boardController.Debug_DisplayGrid();
+
+        BoardButton clickedButton = boardController.GetButtonByCoordinates(positionX, positionY);
+        clickedButton.GetComponent<BoardButton_OnClick_RegisterScore>().UpdateUI(player);
     }
 }
