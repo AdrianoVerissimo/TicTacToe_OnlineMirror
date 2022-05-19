@@ -59,41 +59,18 @@ public class BattleController : SingletonDestroyable<BattleController>
 
     #region Gameplay
 
-    public static void StartTurn()
-    {
-        Instance.RunEvents_StartTurn();
-    }
-    public static void EndTurn()
-    {
-        Instance.boardController.RemoveFreeSpacesCount(1);
-        bool matchEnded = CheckMatchEnded();
-
-        if (matchEnded)
-            return;
-
-        ChangeTurnPlayer();
-        Instance.RunEvents_EndTurn();
-        StartTurn();
-    }
-    public static void ChangeTurnPlayer()
-    {
-        bool playerOneActive = ActivePlayer.PlayerID == Instance.playerOne.PlayerID;
-        if (playerOneActive)
-            SetActivePlayer(Instance.playerTwo);
-        else
-            SetActivePlayer(Instance.playerOne);
-    }
     public static void StartMatch()
     {
-        CharacterController.GeneratePlayerID(Instance.playerOne);
-        CharacterController.GeneratePlayerID(Instance.playerTwo);
-
-        SetActivePlayer(Instance.playerOne);
+        GeneratePlayersIDs();
+        SetupMatch();
         Instance.EnableGameplay();
-
-        CurrentMatchStatus = MatchStatus.PLAYING;
         Instance.RunEvents_StartMatch();
         StartTurn();
+    }
+    public static void SetupMatch()
+    {
+        SetActivePlayer(Instance.playerOne);
+        CurrentMatchStatus = MatchStatus.PLAYING;
     }
     public static void RestartMatch()
     {
@@ -143,6 +120,31 @@ public class BattleController : SingletonDestroyable<BattleController>
         return hasEnded;
     }
 
+    public static void StartTurn()
+    {
+        Instance.RunEvents_StartTurn();
+    }
+    public static void EndTurn()
+    {
+        Instance.boardController.RemoveFreeSpacesCount(1);
+        bool matchEnded = CheckMatchEnded();
+
+        if (matchEnded)
+            return;
+
+        ChangeTurnPlayer();
+        Instance.RunEvents_EndTurn();
+        StartTurn();
+    }
+    public static void ChangeTurnPlayer()
+    {
+        bool playerOneActive = ActivePlayer.PlayerID == Instance.playerOne.PlayerID;
+        if (playerOneActive)
+            SetActivePlayer(Instance.playerTwo);
+        else
+            SetActivePlayer(Instance.playerOne);
+    }
+
     public void EnableRestartMatchButton(bool enable = true) => restartMatchButton.gameObject.SetActive(enable);
     public void DisableRestartMatchButton() => EnableRestartMatchButton(false);
 
@@ -157,7 +159,11 @@ public class BattleController : SingletonDestroyable<BattleController>
 
     #region Players
 
-    
+    public static void GeneratePlayersIDs()
+    {
+        CharacterController.GeneratePlayerID(Instance.playerOne);
+        CharacterController.GeneratePlayerID(Instance.playerTwo);
+    }
 
     #endregion
 
@@ -175,22 +181,22 @@ public class BattleController : SingletonDestroyable<BattleController>
     private void LoadEvents_StartTurn() => OnStartTurnEvents = GetComponents<IMatchController_OnStartTurn>();
     private void LoadEvents_EndTurn() => OnEndTurnEvents = GetComponents<IMatchController_OnEndTurn>();
 
-    private void RunEvents_StartMatch()
+    public void RunEvents_StartMatch()
     {
         foreach (var e in OnStartMatchEvents)
             e.OnStartMatch();
     }
-    private void RunEvents_EndMatch()
+    public void RunEvents_EndMatch()
     {
         foreach (var e in OnEndMatchEvents)
             e.OnEndMatch();
     }
-    private void RunEvents_StartTurn()
+    public void RunEvents_StartTurn()
     {
         foreach (var e in OnStartTurnEvents)
             e.OnStartTurn();
     }
-    private void RunEvents_EndTurn()
+    public void RunEvents_EndTurn()
     {
         foreach (var e in OnEndTurnEvents)
             e.OnEndTurn();

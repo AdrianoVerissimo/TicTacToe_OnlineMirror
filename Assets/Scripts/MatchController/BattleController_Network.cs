@@ -96,13 +96,21 @@ public class BattleController_Network : NetworkBehaviour
 
     private void StartMatch()
     {
-        LoadPlayers(playerOne.netIdentity, playerTwo.netIdentity);
+        CharacterController.GeneratePlayerID(playerOne);
+        CharacterController.GeneratePlayerID(playerTwo);
+        BattleController.SetupMatch();
+
+        Rpc_StartMatch(playerOne.netIdentity, playerTwo.netIdentity);
     }
 
     [ClientRpc]
-    private void LoadPlayers(NetworkIdentity playerOne, NetworkIdentity playerTwo)
+    private void Rpc_StartMatch(NetworkIdentity playerOne, NetworkIdentity playerTwo)
     {
         BattleController.Instance.playerOne = playerOne.gameObject.GetComponent<CharacterController>();
         BattleController.Instance.playerTwo = playerTwo.gameObject.GetComponent<CharacterController>();
+        BattleController.SetActivePlayer(BattleController.Instance.playerOne);
+        BattleController.Instance.EnableGameplay();
+        BattleController.Instance.RunEvents_StartMatch();
+        BattleController.StartTurn();
     }
 }
