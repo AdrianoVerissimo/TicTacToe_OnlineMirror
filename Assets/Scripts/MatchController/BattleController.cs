@@ -88,23 +88,7 @@ public class BattleController : SingletonDestroyable<BattleController>
     }
     public static void EndMatch()
     {
-        string endText = "";
-        switch (CurrentMatchStatus)
-        {
-            case MatchStatus.WON:
-                endText = "Player " + ActivePlayer.PlayerID + " is the winner!!!";
-                break;
-            case MatchStatus.DRAW:
-                endText = "Draw game!";
-                break;
-            case MatchStatus.GIVE_UP:
-                break;
-            default:
-                break;
-        }
-
         Instance.boardController.DisableAllButtons();
-
         Instance.RunEvents_EndMatch();
     }
 

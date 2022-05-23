@@ -135,7 +135,7 @@ public class BattleController_Network : NetworkBehaviour
         bool hasEndedMatch = matchStatus == BattleController.MatchStatus.WON || matchStatus == BattleController.MatchStatus.DRAW;
         if (hasEndedMatch)
         {
-
+            EndMatch();
             return;
         }
 
@@ -158,43 +158,49 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.SetCurrentMatchStatus(matchStatus);
         BattleController.Instance.RunEvents_EndTurn();
         BattleController.StartTurn();
-        Debug.Log("Battle Controller Active Player: " + BattleController.ActivePlayer.gameObject.GetComponent<CharacterController>().PlayerID);
-        Debug.Log("Battle Controller Network Active Player: " + activePlayer.gameObject.GetComponent<CharacterController>().PlayerID);
     }
 
     public void Network_ScorePoint(int positionX, int positionY)
     {
         if (isServer)
-            TryScorePoint(positionX, positionY);
+            ScorePoint(positionX, positionY);
         else
-            Cmd_TryScorePoint(positionX, positionY);
+            Cmd_ScorePoint(positionX, positionY);
     }
-    private void TryScorePoint(int positionX, int positionY)
+    private void ScorePoint(int positionX, int positionY)
     {
         bool canScore = true;
         if (!canScore)
             return;
 
+        //score
         CharacterController activePlayer = BattleController.ActivePlayer;
-        Rpc_ScorePoint(activePlayer.netIdentity, positionX, positionY);
+        BoardController boardController = BattleController.Instance.BoardController;
+
+        BattleController.ScorePoint(activePlayer, positionX, positionY);
+        Rpc_UpdateClickedButtonUI(activePlayer.netIdentity, positionX, positionY);
     }
 
     [Command(channel = 0, requiresAuthority = false)]
-    private void Cmd_TryScorePoint(int positionX, int positionY)
-    {
-        TryScorePoint(positionX, positionY);
-    }
+    private void Cmd_ScorePoint(int positionX, int positionY) => ScorePoint(positionX, positionY);
 
     [ClientRpc]
-    private void Rpc_ScorePoint(NetworkIdentity playerNet, int positionX, int positionY)
+    private void Rpc_UpdateClickedButtonUI(NetworkIdentity activePlayerNetIdentity, int positionX, int positionY)
     {
+        CharacterController activePlayer = activePlayerNetIdentity.gameObject.GetComponent<CharacterController>();
         BoardController boardController = BattleController.Instance.BoardController;
-        boardController.Debug_DisplayGrid();
-        CharacterController player = playerNet.GetComponent<CharacterController>();
-        BattleController.ScorePoint(player, positionX, positionY);
-        boardController.Debug_DisplayGrid();
-
         BoardButton clickedButton = boardController.GetButtonByCoordinates(positionX, positionY);
-        clickedButton.GetComponent<BoardButton_OnClick_RegisterScore>().UpdateUI(player);
+
+        clickedButton.gameObject.GetComponent<BoardButton_OnClick_RegisterScore>().UpdateUI(activePlayer);
+    }
+
+    private void EndMatch()
+    {
+        Rpc_EndMatch();
+    }
+    [ClientRpc]
+    private void Rpc_EndMatch()
+    {
+        BattleController.EndMatch();
     }
 }
