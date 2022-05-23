@@ -6,8 +6,8 @@ public class BattleController_Network : NetworkBehaviour
     private BattleController battleController;
     private NetworkManager networkManager;
 
-    [SyncVar] public CharacterController playerOne;
-    [SyncVar] public CharacterController playerTwo;
+    [SyncVar] public NetworkIdentity playerOneNetworkIdentity;
+    [SyncVar] public NetworkIdentity playerTwoNetworkIdentity;
 
     public static BattleController_Network Instance;
 
@@ -34,12 +34,10 @@ public class BattleController_Network : NetworkBehaviour
     }
     private void RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
     {
-        CharacterController player = playerNetworkIdentity.GetComponent<CharacterController>();
-
-        if (playerOne == null)
-            playerOne = player;
-        else if (playerTwo == null)
-            playerTwo = player;
+        if (playerOneNetworkIdentity == null)
+            playerOneNetworkIdentity = playerNetworkIdentity;
+        else if (playerTwoNetworkIdentity == null)
+            playerTwoNetworkIdentity = playerNetworkIdentity;
     }
 
     [Command(channel = 0, requiresAuthority = false)]
@@ -47,22 +45,22 @@ public class BattleController_Network : NetworkBehaviour
 
     public void ShowPlayers()
     {
-        if (playerOne != null)
+        if (playerOneNetworkIdentity != null)
         {
-            Debug.Log("Player one: " + playerOne.GetComponent<NetworkConnection>().connectionId);
+            Debug.Log("Player one: " + playerOneNetworkIdentity.GetComponent<NetworkConnection>().connectionId);
         }
 
-        if (playerTwo != null)
+        if (playerTwoNetworkIdentity != null)
         {
-            Debug.Log("Player two: " + playerTwo.GetComponent<NetworkConnection>().connectionId);
+            Debug.Log("Player two: " + playerTwoNetworkIdentity.GetComponent<NetworkConnection>().connectionId);
         }
     }
 
-    public void RemovePlayers() => playerOne = playerTwo = null;
+    public void RemovePlayers() => playerOneNetworkIdentity = playerTwoNetworkIdentity = null;
 
     public bool CheckAllPlayersConnected()
     {
-        bool allPlayersConnected = playerOne != null && playerTwo != null;
+        bool allPlayersConnected = playerOneNetworkIdentity != null && playerTwoNetworkIdentity != null;
         return allPlayersConnected;
     }
     public void Network_ShouldStartMatch()
@@ -96,18 +94,25 @@ public class BattleController_Network : NetworkBehaviour
 
     private void StartMatch()
     {
+        CharacterController playerOne = playerOneNetworkIdentity.gameObject.GetComponent<CharacterController>();
+        CharacterController playerTwo = playerTwoNetworkIdentity.gameObject.GetComponent<CharacterController>();
+
         CharacterController.GeneratePlayerID(playerOne);
         CharacterController.GeneratePlayerID(playerTwo);
         BattleController.SetupMatch();
 
-        Rpc_StartMatch(playerOne.netIdentity, playerTwo.netIdentity);
+        Rpc_StartMatch(playerOne.PlayerID, playerTwo.PlayerID, playerOneNetworkIdentity, playerTwoNetworkIdentity);
     }
 
     [ClientRpc]
-    private void Rpc_StartMatch(NetworkIdentity playerOne, NetworkIdentity playerTwo)
+    private void Rpc_StartMatch(int playerOneID, int playerTwoID, NetworkIdentity playerOneNetIdentity, NetworkIdentity playerTwoNetIdentity)
     {
-        BattleController.Instance.playerOne = playerOne.gameObject.GetComponent<CharacterController>();
-        BattleController.Instance.playerTwo = playerTwo.gameObject.GetComponent<CharacterController>();
+        BattleController.Instance.playerOne = playerOneNetIdentity.gameObject.GetComponent<CharacterController>();
+        BattleController.Instance.playerTwo = playerTwoNetIdentity.gameObject.GetComponent<CharacterController>();
+
+        BattleController.Instance.playerOne.SetPlayerID(playerOneID);
+        BattleController.Instance.playerTwo.SetPlayerID(playerTwoID);
+
         BattleController.SetActivePlayer(BattleController.Instance.playerOne);
         BattleController.Instance.EnableGameplay();
         BattleController.Instance.RunEvents_StartMatch();
@@ -153,6 +158,8 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.SetCurrentMatchStatus(matchStatus);
         BattleController.Instance.RunEvents_EndTurn();
         BattleController.StartTurn();
+        Debug.Log("Battle Controller Active Player: " + BattleController.ActivePlayer.gameObject.GetComponent<CharacterController>().PlayerID);
+        Debug.Log("Battle Controller Network Active Player: " + activePlayer.gameObject.GetComponent<CharacterController>().PlayerID);
     }
 
     public void Network_ScorePoint(int positionX, int positionY)
