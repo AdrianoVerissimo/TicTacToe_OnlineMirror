@@ -10,6 +10,7 @@ public class BattleController : SingletonDestroyable<BattleController>
     }
     public static MatchStatus CurrentMatchStatus;
     public static CharacterController ActivePlayer { get; private set; }
+    public CharacterController testActivePlayer;
 
     public BoardController BoardController { get { return boardController; } }
     [SerializeField] private BoardController boardController;
@@ -60,6 +61,11 @@ public class BattleController : SingletonDestroyable<BattleController>
 
     #region Gameplay
 
+    public static void SetCurrentMatchStatus(MatchStatus matchStatus)
+    {
+        CurrentMatchStatus = matchStatus;
+    }
+
     public static void StartMatch()
     {
         GeneratePlayersIDs();
@@ -102,23 +108,19 @@ public class BattleController : SingletonDestroyable<BattleController>
         Instance.RunEvents_EndMatch();
     }
 
-    public static bool CheckMatchEnded()
+    public static MatchStatus GetUpdatedMatchStatus()
     {
         bool hasWinner = Instance.boardController.HasPlayerWon(ActivePlayer);
         bool isDraw = !hasWinner && Instance.boardController.FreeSpacesCount == 0;
         bool hasEnded = hasWinner || isDraw;
+        MatchStatus matchStatus = MatchStatus.PLAYING;
 
-        if (hasEnded)
-        {
-            if (hasWinner)
-                CurrentMatchStatus = MatchStatus.WON;
-            else if (isDraw)
-                CurrentMatchStatus = MatchStatus.DRAW;
+        if (hasWinner)
+            matchStatus = MatchStatus.WON;
+        else if (isDraw)
+            matchStatus = MatchStatus.DRAW;
 
-            EndMatch();
-        }
-
-        return hasEnded;
+        return matchStatus;
     }
 
     public static void StartTurn()
@@ -128,10 +130,14 @@ public class BattleController : SingletonDestroyable<BattleController>
     public static void EndTurn()
     {
         Instance.boardController.RemoveFreeSpacesCount(1);
-        bool matchEnded = CheckMatchEnded();
+        CurrentMatchStatus = GetUpdatedMatchStatus();
+        bool hasEndedMatch = CurrentMatchStatus == MatchStatus.WON || CurrentMatchStatus == MatchStatus.DRAW;
 
-        if (matchEnded)
+        if (hasEndedMatch)
+        {
+            EndMatch();
             return;
+        }
 
         ChangeTurnPlayer();
         Instance.RunEvents_EndTurn();

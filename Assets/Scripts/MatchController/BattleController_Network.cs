@@ -114,6 +114,47 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.StartTurn();
     }
 
+    public void Network_EndTurn()
+    {
+        if (isServer)
+            EndTurn();
+        else
+            Cmd_EndTurn();
+    }
+
+    private void EndTurn()
+    {
+        int removeFreeSpacesNumber = 1;
+
+        BattleController.MatchStatus matchStatus = BattleController.GetUpdatedMatchStatus();
+        bool hasEndedMatch = matchStatus == BattleController.MatchStatus.WON || matchStatus == BattleController.MatchStatus.DRAW;
+        if (hasEndedMatch)
+        {
+
+            return;
+        }
+
+        BattleController.ChangeTurnPlayer();
+        CharacterController activePlayer = BattleController.ActivePlayer;
+        
+        Rpc_EndTurn(removeFreeSpacesNumber, matchStatus, activePlayer.netIdentity);
+    }
+    [Command(channel = 0, requiresAuthority = false)]
+    private void Cmd_EndTurn() => EndTurn();
+
+    [ClientRpc]
+    private void Rpc_EndTurn(int removeFreeSpacesNumber, BattleController.MatchStatus matchStatus, NetworkIdentity activePlayerNetworkIdentity)
+    {
+        CharacterController activePlayer = activePlayerNetworkIdentity.gameObject.GetComponent<CharacterController>();
+
+        BattleController.Instance.BoardController.RemoveFreeSpacesCount(removeFreeSpacesNumber);
+        BattleController.SetActivePlayer(activePlayer);
+        BattleController.Instance.testActivePlayer = activePlayer;
+        BattleController.SetCurrentMatchStatus(matchStatus);
+        BattleController.Instance.RunEvents_EndTurn();
+        BattleController.StartTurn();
+    }
+
     public void Network_ScorePoint(int positionX, int positionY)
     {
         if (isServer)
