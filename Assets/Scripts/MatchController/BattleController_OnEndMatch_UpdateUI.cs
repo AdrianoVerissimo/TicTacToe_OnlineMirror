@@ -4,7 +4,7 @@ using TMPro;
 
 public class BattleController_OnEndMatch_UpdateUI : MonoBehaviour, IMatchController_OnEndMatch
 {
-    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private Text descriptionText;
     public Text textTest;
 
     public void OnEndMatch()

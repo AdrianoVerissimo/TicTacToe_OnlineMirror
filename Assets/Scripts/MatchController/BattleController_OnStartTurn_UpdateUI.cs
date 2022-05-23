@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class BattleController_OnStartTurn_UpdateUI : MonoBehaviour, IMatchController_OnStartTurn
 {
-    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private Text descriptionText;
 
     public void OnStartTurn()
     {

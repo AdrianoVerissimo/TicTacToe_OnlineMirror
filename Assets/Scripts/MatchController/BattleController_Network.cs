@@ -8,6 +8,7 @@ public class BattleController_Network : NetworkBehaviour
 
     [SyncVar] public NetworkIdentity playerOneNetworkIdentity;
     [SyncVar] public NetworkIdentity playerTwoNetworkIdentity;
+    [SyncVar] public BattleController.MatchStatus CurrentMatchStatus;
 
     public static BattleController_Network Instance;
 
@@ -131,18 +132,18 @@ public class BattleController_Network : NetworkBehaviour
     {
         int removeFreeSpacesNumber = 1;
 
-        BattleController.MatchStatus matchStatus = BattleController.GetUpdatedMatchStatus();
-        bool hasEndedMatch = matchStatus == BattleController.MatchStatus.WON || matchStatus == BattleController.MatchStatus.DRAW;
+        CurrentMatchStatus = BattleController.GetUpdatedMatchStatus();
+        bool hasEndedMatch = CurrentMatchStatus == BattleController.MatchStatus.WON || CurrentMatchStatus == BattleController.MatchStatus.DRAW;
         if (hasEndedMatch)
         {
-            EndMatch();
+            EndMatch(CurrentMatchStatus);
             return;
         }
 
         BattleController.ChangeTurnPlayer();
         CharacterController activePlayer = BattleController.ActivePlayer;
         
-        Rpc_EndTurn(removeFreeSpacesNumber, matchStatus, activePlayer.netIdentity);
+        Rpc_EndTurn(removeFreeSpacesNumber, CurrentMatchStatus, activePlayer.netIdentity);
     }
     [Command(channel = 0, requiresAuthority = false)]
     private void Cmd_EndTurn() => EndTurn();
@@ -173,7 +174,6 @@ public class BattleController_Network : NetworkBehaviour
         if (!canScore)
             return;
 
-        //score
         CharacterController activePlayer = BattleController.ActivePlayer;
         BoardController boardController = BattleController.Instance.BoardController;
 
@@ -194,13 +194,12 @@ public class BattleController_Network : NetworkBehaviour
         clickedButton.gameObject.GetComponent<BoardButton_OnClick_RegisterScore>().UpdateUI(activePlayer);
     }
 
-    private void EndMatch()
-    {
-        Rpc_EndMatch();
-    }
+    private void EndMatch(BattleController.MatchStatus matchStatus) => Rpc_EndMatch(matchStatus);
+
     [ClientRpc]
-    private void Rpc_EndMatch()
+    private void Rpc_EndMatch(BattleController.MatchStatus matchStatus)
     {
+        BattleController.CurrentMatchStatus = matchStatus;
         BattleController.EndMatch();
     }
 }
