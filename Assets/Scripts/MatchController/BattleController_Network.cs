@@ -243,6 +243,5 @@ public class BattleController_Network : NetworkBehaviour
             BattleController.Instance.BoardController.EnableAvailableButtons();
         else
             BattleController.Instance.BoardController.DisableAvailableButtons();
-
     }
 }
