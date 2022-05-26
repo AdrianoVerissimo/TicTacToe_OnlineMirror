@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+using System;
 
 public class BattleController_Network : NetworkBehaviour
 {
@@ -163,6 +164,22 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.StartTurn();
     }
 
+    public void Network_TryScorePoint(int positionX, int positionY)
+    {
+        if (isServer)
+            TryScorePoint(positionX, positionY);
+        else
+            Cmd_TryScorePoint(positionX, positionY);
+    }
+    [Command]
+    private void Cmd_TryScorePoint(int positionX, int positionY)
+    {
+        TryScorePoint(positionX, positionY);
+    }
+    private void TryScorePoint(int positionX, int positionY)
+    {
+        Network_ScorePoint(positionX, positionY);
+    }
     public void Network_ScorePoint(int positionX, int positionY)
     {
         if (isServer)
@@ -186,6 +203,11 @@ public class BattleController_Network : NetworkBehaviour
     [Command(channel = 0, requiresAuthority = false)]
     private void Cmd_ScorePoint(int positionX, int positionY) => ScorePoint(positionX, positionY);
 
+    public static bool IsLocalPlayerTurn()
+    {
+        return CharacterController.LocalPlayer.PlayerID == BattleController.ActivePlayer.PlayerID;
+    }
+
     [ClientRpc]
     private void Rpc_UpdateClickedButtonUI(NetworkIdentity activePlayerNetIdentity, int positionX, int positionY)
     {
@@ -206,4 +228,29 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.CurrentMatchStatus = matchStatus;
         BattleController.EndMatch();
     }
+
+    /*public bool Network_IsPlayerTurn(NetworkIdentity playerNetIdentity)
+    {
+        if (isServer)
+            IsPlayerTurn(playerNetIdentity);
+        else
+            Cmd_IsPlayerTurn(playerNetIdentity);
+    }
+
+    
+
+    private void IsPlayerTurn(NetworkIdentity playerNetIdentity)
+    {
+        bool isMyTurn = false;
+
+        CharacterController player = playerNetIdentity.gameObject.GetComponent<CharacterController>();
+        isMyTurn = player.PlayerID == BattleController.ActivePlayer.PlayerID;
+
+        return isMyTurn;
+    }
+    [Command]
+    private void Cmd_IsPlayerTurn(NetworkIdentity playerNetIdentity)
+    {
+        throw new NotImplementedException();
+    }*/
 }

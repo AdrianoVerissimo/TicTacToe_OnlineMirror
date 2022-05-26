@@ -37,6 +37,10 @@ public class BoardButton_OnClick_RegisterScore : MonoBehaviour, IBoardButton_OnC
 
     public void Network_RegisterScore()
     {
+        bool isLocalPlayerTurn = BattleController_Network.IsLocalPlayerTurn();
+        if (!isLocalPlayerTurn)
+            return;
+
         BattleController_Network.Instance.Network_ScorePoint((int)boardButton.BoardPosition.x, (int)boardButton.BoardPosition.y);
         BattleController_Network.Instance.Network_EndTurn();
     }

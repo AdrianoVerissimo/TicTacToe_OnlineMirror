@@ -9,6 +9,7 @@ public class CharacterController : NetworkBehaviour
 
     private NetworkIdentity networkIdentity;
     public GameObject battleController_NetworkPrefab;
+    public static CharacterController LocalPlayer { get; private set; }
 
     private void Awake()
     {
@@ -49,8 +50,8 @@ public class CharacterController : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
+        RegisterLocalPlayer(netIdentity);
         Network_CreateBattleControllerNetwork();
-
         BattleController_Network.Instance.Network_RegisterPlayerOnMatch(netIdentity);
         BattleController_Network.Instance.Network_ShouldStartMatch();
     }
@@ -77,6 +78,17 @@ public class CharacterController : NetworkBehaviour
     {
         CreateBattleControllerNetwork();
     }
+
+    public void RegisterLocalPlayer(NetworkIdentity playerNetIdentity)
+    {
+        if (playerNetIdentity == null)
+        {
+            LocalPlayer = null;
+            return;
+        }
+        LocalPlayer = playerNetIdentity.gameObject.GetComponent<CharacterController>();
+    }
+    public void RemoveLocalPlayer() => RegisterLocalPlayer(null);
 
     #endregion
 }
