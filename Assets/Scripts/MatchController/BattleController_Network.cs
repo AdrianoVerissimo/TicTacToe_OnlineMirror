@@ -118,6 +118,9 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.SetActivePlayer(BattleController.Instance.playerOne);
         BattleController.Instance.EnableGameplay();
         BattleController.Instance.RunEvents_StartMatch();
+
+        ShouldEnableButtonsForLocalPlayer();
+
         BattleController.StartTurn();
     }
 
@@ -160,7 +163,11 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.SetActivePlayer(activePlayer);
         BattleController.Instance.testActivePlayer = activePlayer;
         BattleController.SetCurrentMatchStatus(matchStatus);
+
         BattleController.Instance.RunEvents_EndTurn();
+
+        ShouldEnableButtonsForLocalPlayer();
+
         BattleController.StartTurn();
     }
 
@@ -229,28 +236,13 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.EndMatch();
     }
 
-    /*public bool Network_IsPlayerTurn(NetworkIdentity playerNetIdentity)
+    public void ShouldEnableButtonsForLocalPlayer()
     {
-        if (isServer)
-            IsPlayerTurn(playerNetIdentity);
+        bool isLocalPlayerTurn = IsLocalPlayerTurn();
+        if (isLocalPlayerTurn)
+            BattleController.Instance.BoardController.EnableAvailableButtons();
         else
-            Cmd_IsPlayerTurn(playerNetIdentity);
+            BattleController.Instance.BoardController.DisableAvailableButtons();
+
     }
-
-    
-
-    private void IsPlayerTurn(NetworkIdentity playerNetIdentity)
-    {
-        bool isMyTurn = false;
-
-        CharacterController player = playerNetIdentity.gameObject.GetComponent<CharacterController>();
-        isMyTurn = player.PlayerID == BattleController.ActivePlayer.PlayerID;
-
-        return isMyTurn;
-    }
-    [Command]
-    private void Cmd_IsPlayerTurn(NetworkIdentity playerNetIdentity)
-    {
-        throw new NotImplementedException();
-    }*/
 }

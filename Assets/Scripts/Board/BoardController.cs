@@ -153,6 +153,18 @@ public class BoardController : MonoBehaviour
         return null;
     }
 
+    public int GetPlayerScoreAtPosition(int positionX, int positionY)
+    {
+        int score = scoreArray[positionX, positionY];
+        return score;
+    }
+    public bool HasPlayerScoreAtPosition(int positionX, int positionY)
+    {
+        bool hasScore = GetPlayerScoreAtPosition(positionX, positionY) != -1;
+        return hasScore;
+    }
+    public bool HasPlayerScoreAtPosition(float positionX, float positionY) => HasPlayerScoreAtPosition((int)positionX, (int)positionY);
+
     public void Debug_DisplayGrid()
     {
         string text = "";
@@ -184,12 +196,23 @@ public class BoardController : MonoBehaviour
         foreach (var button in boardButtons)
             button.ResetText();
     }
-    public void EnableAllButtons(bool enable = true)
+    public void EnableAllButtons(bool enable = true, bool enableOnlyAvailables = false)
     {
+        bool hasScore;
         foreach (var button in boardButtons)
+        {
+            if (enableOnlyAvailables)
+            {
+                hasScore = HasPlayerScoreAtPosition(button.BoardPosition.x, button.BoardPosition.y);
+                if (hasScore)
+                    continue;
+            }
             button.EnableInteraction(enable);
+        }
     }
     public void DisableAllButtons() => EnableAllButtons(false);
+    public void EnableAvailableButtons() => EnableAllButtons(true, true);
+    public void DisableAvailableButtons() => EnableAllButtons(false, true);
 
     public void ResetBoard()
     {
