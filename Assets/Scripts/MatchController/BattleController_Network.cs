@@ -190,8 +190,10 @@ public class BattleController_Network : NetworkBehaviour
         CharacterController activePlayer = activePlayerNetIdentity.gameObject.GetComponent<CharacterController>();
         BoardController boardController = BattleController.Instance.BoardController;
         BoardButton clickedButton = boardController.GetButtonByCoordinates(positionX, positionY);
+        BoardButton_OnClick_RegisterScore clickedButton_RegisterScore = clickedButton.gameObject.GetComponent<BoardButton_OnClick_RegisterScore>();
 
-        clickedButton.gameObject.GetComponent<BoardButton_OnClick_RegisterScore>().UpdateUI(activePlayer);
+        clickedButton_RegisterScore.UpdateUI(activePlayer);
+        clickedButton.DisableInteraction();
     }
 
     private void EndMatch(BattleController.MatchStatus matchStatus) => Rpc_EndMatch(matchStatus);
