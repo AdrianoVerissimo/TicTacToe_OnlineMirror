@@ -131,6 +131,8 @@ public class BattleController_Network : NetworkBehaviour
     private void EndTurn()
     {
         int removeFreeSpacesNumber = 1;
+        BattleController.Instance.BoardController.RemoveFreeSpacesCount(removeFreeSpacesNumber);
+        int freeSpacesNumber = BattleController.Instance.BoardController.FreeSpacesCount;
 
         CurrentMatchStatus = BattleController.GetUpdatedMatchStatus();
         bool hasEndedMatch = CurrentMatchStatus == BattleController.MatchStatus.WON || CurrentMatchStatus == BattleController.MatchStatus.DRAW;
@@ -143,17 +145,17 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.ChangeTurnPlayer();
         CharacterController activePlayer = BattleController.ActivePlayer;
         
-        Rpc_EndTurn(removeFreeSpacesNumber, CurrentMatchStatus, activePlayer.netIdentity);
+        Rpc_EndTurn(freeSpacesNumber, CurrentMatchStatus, activePlayer.netIdentity);
     }
     [Command(channel = 0, requiresAuthority = false)]
     private void Cmd_EndTurn() => EndTurn();
 
     [ClientRpc]
-    private void Rpc_EndTurn(int removeFreeSpacesNumber, BattleController.MatchStatus matchStatus, NetworkIdentity activePlayerNetworkIdentity)
+    private void Rpc_EndTurn(int freeSpacesNumber, BattleController.MatchStatus matchStatus, NetworkIdentity activePlayerNetworkIdentity)
     {
         CharacterController activePlayer = activePlayerNetworkIdentity.gameObject.GetComponent<CharacterController>();
 
-        BattleController.Instance.BoardController.RemoveFreeSpacesCount(removeFreeSpacesNumber);
+        BattleController.Instance.BoardController.SetFreeSpacesCount(freeSpacesNumber);
         BattleController.SetActivePlayer(activePlayer);
         BattleController.Instance.testActivePlayer = activePlayer;
         BattleController.SetCurrentMatchStatus(matchStatus);
