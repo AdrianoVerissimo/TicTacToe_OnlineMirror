@@ -1,19 +1,24 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
-public class LobbyController : MonoBehaviour
+public class LobbyController : SingletonDestroyable<LobbyController>
 {
+    [Header("Screens")]
     [SerializeField] private LobbyScreen enterNameScreen; 
-    [SerializeField] private LobbyScreen connectionScreen; 
+    [SerializeField] private LobbyScreen connectionScreen;
 
-    public void ShowEnterNameScreen()
+    
+
+    public static void ShowEnterNameScreen()
     {
-        enterNameScreen.gameObject.SetActive(true);
-        connectionScreen.gameObject.SetActive(false);
+        Instance.enterNameScreen.gameObject.SetActive(true);
+        Instance.connectionScreen.gameObject.SetActive(false);
     }
-    public void ShowConnectionScreen()
+    public static void ShowConnectionScreen()
     {
-        connectionScreen.gameObject.SetActive(true);
-        enterNameScreen.gameObject.SetActive(false);
+        Instance.connectionScreen.gameObject.SetActive(true);
+        Instance.enterNameScreen.gameObject.SetActive(false);
     }
+
+    
 }
