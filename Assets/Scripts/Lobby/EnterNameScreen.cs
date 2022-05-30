@@ -19,17 +19,24 @@ public class EnterNameScreen : MonoBehaviour
         ClearDescriptionText();
     }
 
-    public void TryConnect()
+    public void TryHostLobby()
     {
         bool isValid = ValidateFields();
         if (!isValid)
-        {
-            SetDescriptionText(nameErrorDescription);
             return;
-        }
 
+        NetworkManager_TicTacToe.HostLobby();
         SavePlayerName();
+        LobbyController.ShowConnectionScreen();
+    }
+    public void TryJoinLobby()
+    {
+        bool isValid = ValidateFields();
+        if (!isValid)
+            return;
 
+        NetworkManager_TicTacToe.JoinLobby();
+        SavePlayerName();
         LobbyController.ShowConnectionScreen();
     }
     public bool ValidateFields()
@@ -38,6 +45,9 @@ public class EnterNameScreen : MonoBehaviour
         bool isValid = false;
 
         isValid = !string.IsNullOrEmpty(typedName);
+
+        if (!isValid)
+            SetDescriptionText(nameErrorDescription);
 
         return isValid;
     }
