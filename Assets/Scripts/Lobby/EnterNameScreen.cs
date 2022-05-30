@@ -3,9 +3,16 @@ using UnityEngine.UI;
 
 public class EnterNameScreen : MonoBehaviour
 {
+    private const string PlayerPrefsNameKey = "PlayerName";
+
     [SerializeField] private string nameErrorDescription;
     [SerializeField] private Text descriptionText;
     [SerializeField] private InputField nameInput;
+
+    private void Start()
+    {
+        SetupInputField();
+    }
 
     private void OnEnable()
     {
@@ -20,6 +27,8 @@ public class EnterNameScreen : MonoBehaviour
             SetDescriptionText(nameErrorDescription);
             return;
         }
+
+        SavePlayerName();
 
         LobbyController.ShowConnectionScreen();
     }
@@ -40,5 +49,21 @@ public class EnterNameScreen : MonoBehaviour
     public void ClearDescriptionText()
     {
         SetDescriptionText(" ");
+    }
+
+    private void SetupInputField()
+    {
+        bool hasName = PlayerPrefs.HasKey(PlayerPrefsNameKey);
+        if (!hasName)
+            return;
+
+        string defaultName = PlayerPrefs.GetString(PlayerPrefsNameKey);
+        nameInput.text = defaultName;
+    }
+
+    private void SavePlayerName()
+    {
+        string playerName = nameInput.text;
+        PlayerPrefs.SetString(PlayerPrefsNameKey, playerName);
     }
 }
