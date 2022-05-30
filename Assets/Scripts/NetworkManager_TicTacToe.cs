@@ -3,12 +3,20 @@ using Mirror;
 
 public class NetworkManager_TicTacToe : NetworkManager
 {
-    private BattleController_Network matchController_Network;
-
     public override void Start()
     {
         base.Start();
+    }
 
-        matchController_Network = GetComponent<BattleController_Network>();
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerConnect(conn);
+
+        bool maxPlayersExceed = numPlayers >= maxConnections;
+        if (maxPlayersExceed)
+        {
+            conn.Disconnect();
+            return;
+        }
     }
 }

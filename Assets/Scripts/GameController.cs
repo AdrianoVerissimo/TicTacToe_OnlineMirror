@@ -19,4 +19,15 @@ public class GameController : Singleton<GameController>
     {
         CurrentGameMode = gameMode;
     }
+
+    public static void ShowLobbyScreen()
+    {
+        LobbyController.ShowLobbyScreen();
+        BattleController.HideGameplayScreen();
+    }
+    public static void ShowGameplayScreen()
+    {
+        BattleController.ShowGameplayScreen();
+        LobbyController.HideLobbyScreen();
+    }
 }

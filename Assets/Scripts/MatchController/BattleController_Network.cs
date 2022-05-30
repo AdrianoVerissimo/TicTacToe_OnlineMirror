@@ -109,6 +109,8 @@ public class BattleController_Network : NetworkBehaviour
     [ClientRpc]
     private void Rpc_StartMatch(int playerOneID, int playerTwoID, NetworkIdentity playerOneNetIdentity, NetworkIdentity playerTwoNetIdentity)
     {
+        GameController.ShowGameplayScreen();
+
         BattleController.Instance.playerOne = playerOneNetIdentity.gameObject.GetComponent<CharacterController>();
         BattleController.Instance.playerTwo = playerTwoNetIdentity.gameObject.GetComponent<CharacterController>();
 
@@ -161,7 +163,6 @@ public class BattleController_Network : NetworkBehaviour
 
         BattleController.Instance.BoardController.SetFreeSpacesCount(freeSpacesNumber);
         BattleController.SetActivePlayer(activePlayer);
-        BattleController.Instance.testActivePlayer = activePlayer;
         BattleController.SetCurrentMatchStatus(matchStatus);
 
         BattleController.Instance.RunEvents_EndTurn();

@@ -10,8 +10,8 @@ public class BattleController : SingletonDestroyable<BattleController>
     }
     public static MatchStatus CurrentMatchStatus;
     public static CharacterController ActivePlayer { get; private set; }
-    public CharacterController testActivePlayer;
 
+    public GameObject gameplayScreenObject;
     public BoardController BoardController { get { return boardController; } }
     [SerializeField] private BoardController boardController;
     [SerializeField] public CharacterController playerOne;
@@ -157,6 +157,12 @@ public class BattleController : SingletonDestroyable<BattleController>
     }
 
     #endregion
+
+    public static void ShowGameplayScreen(bool show = true)
+    {
+        Instance.gameplayScreenObject.SetActive(show);
+    }
+    public static void HideGameplayScreen() => ShowGameplayScreen(false);
 
     #region Events
 
