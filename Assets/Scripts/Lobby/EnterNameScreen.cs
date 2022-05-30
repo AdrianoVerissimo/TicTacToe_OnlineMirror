@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class EnterNameScreen : MonoBehaviour
 {
-    private const string PlayerPrefsNameKey = "PlayerName";
+    public const string PlayerPrefsNameKey = "PlayerName";
 
     [SerializeField] private string nameErrorDescription;
     [SerializeField] private Text descriptionText;

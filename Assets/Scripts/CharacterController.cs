@@ -4,6 +4,7 @@ using Mirror;
 public class CharacterController : NetworkBehaviour
 {
     public int PlayerID { get; private set; }
+    [SyncVar] public string playerName;
 
     public static int CountPlayerID { get; private set; } = 0;
 
@@ -43,6 +44,23 @@ public class CharacterController : NetworkBehaviour
         CountPlayerID = value;
     }
 
+    public void Network_SetPlayerName(string name)
+    {
+        if (isServer)
+            SetPlayerName(name);
+        else
+            Cmd_SetPlayerName(name);
+    }
+    [Command]
+    private void Cmd_SetPlayerName(string name)
+    {
+        SetPlayerName(name);
+    }
+    private void SetPlayerName(string name)
+    {
+        playerName = name;
+    }
+
     #region Network
 
     public override void OnStartClient()
@@ -50,6 +68,7 @@ public class CharacterController : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
+        Network_SetPlayerName(PlayerPrefs.GetString(EnterNameScreen.PlayerPrefsNameKey));
         RegisterLocalPlayer(netIdentity);
         Network_CreateBattleControllerNetwork();
         BattleController_Network.Instance.Network_RegisterPlayerOnMatch(netIdentity);

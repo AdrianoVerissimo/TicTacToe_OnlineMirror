@@ -8,8 +8,8 @@ public class BattleController_OnStartTurn_UpdateUI : MonoBehaviour, IMatchContro
 
     public void OnStartTurn()
     {
-        int shownID = BattleController.ActivePlayer.PlayerID + 1;
-        string text = "Player " + shownID.ToString() + " turn";
+        string playerName = BattleController.ActivePlayer.playerName;
+        string text = playerName + " turn";
 
         descriptionText.text = text;
     }

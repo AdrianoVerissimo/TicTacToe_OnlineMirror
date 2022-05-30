@@ -9,7 +9,7 @@ public class BattleController_OnEndMatch_UpdateUI : MonoBehaviour, IMatchControl
 
     public void OnEndMatch()
     {
-        int shownID = BattleController.ActivePlayer.PlayerID + 1;
+        string playerName = BattleController.ActivePlayer.playerName;
         string text = "";
 
         switch (BattleController.CurrentMatchStatus)
@@ -17,7 +17,7 @@ public class BattleController_OnEndMatch_UpdateUI : MonoBehaviour, IMatchControl
             case BattleController.MatchStatus.PLAYING:
                 break;
             case BattleController.MatchStatus.WON:
-                text = "Player " + shownID + " is the winner!!!";
+                text = playerName + " is the winner!!!";
                 break;
             case BattleController.MatchStatus.DRAW:
                 text = "The game is a draw!";
