@@ -86,6 +86,7 @@ public class BattleController : SingletonDestroyable<BattleController>
         Instance.boardController.EnableAllButtons();
         StartMatch();
     }
+
     public static void EndMatch()
     {
         Instance.boardController.DisableAllButtons();

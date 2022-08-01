@@ -126,6 +126,29 @@ public class BattleController_Network : NetworkBehaviour
         BattleController.StartTurn();
     }
 
+    public void Network_RestartMatch()
+    {
+        if (isServer)
+        {
+            Rpc_RestartMatch();
+        }
+        else
+        {
+            Cmd_RestartMatch();
+        }
+    }
+
+    [ClientRpc]
+    public void Rpc_RestartMatch()
+    {
+        BattleController.RestartMatch();
+    }
+    [Command(channel = 0, requiresAuthority = false)]
+    public void Cmd_RestartMatch()
+    {
+        Rpc_RestartMatch();
+    }
+
     public void Network_EndTurn()
     {
         if (isServer)
