@@ -8,8 +8,12 @@ public class BattleController_OnStartTurn_UpdateUI : MonoBehaviour, IMatchContro
 
     public void OnStartTurn()
     {
-        string playerName = BattleController.ActivePlayer.playerName;
-        string text = playerName + " turn";
+        bool isLocalPlayerTurn = BattleController.ActivePlayer.netId == CharacterController.LocalPlayer.netId;
+        string text = "";
+        if (isLocalPlayerTurn)
+            text = "Your turn.";
+        else
+            text =  "Waiting for opponent's move...";
 
         descriptionText.text = text;
     }

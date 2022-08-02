@@ -44,15 +44,6 @@ public class NetworkManager_TicTacToe : NetworkManager
         
     }
 
-    public override void OnStopHost()
-    {
-        
-    }
-    public override void OnStopClient()
-    {
-        
-    }
-
     public static void HostLobby()
     {
         Instance.StartHost();
