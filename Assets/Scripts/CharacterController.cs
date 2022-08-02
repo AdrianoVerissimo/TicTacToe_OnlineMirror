@@ -110,4 +110,11 @@ public class CharacterController : NetworkBehaviour
     public void RemoveLocalPlayer() => RegisterLocalPlayer(null);
 
     #endregion
+
+    public override void OnStopLocalPlayer()
+    {
+        BattleController_Network.Instance.Network_DisconnectAllClients();
+        BattleController.Instance.QuitMatch();
+        NetworkManager_TicTacToe.ExitLobby();
+    }
 }

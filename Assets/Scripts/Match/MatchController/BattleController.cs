@@ -69,6 +69,7 @@ public class BattleController : SingletonDestroyable<BattleController>
     public static void StartMatch()
     {
         GeneratePlayersIDs();
+        ResetMatchData();
         SetupMatch();
         Instance.EnableGameplay();
         Instance.RunEvents_StartMatch();
@@ -79,11 +80,14 @@ public class BattleController : SingletonDestroyable<BattleController>
         SetActivePlayer(Instance.playerOne);
         CurrentMatchStatus = MatchStatus.PLAYING;
     }
-    public static void RestartMatch()
+    public static void ResetMatchData()
     {
         Instance.boardController.ResetBoard();
         SetActivePlayer(Instance.playerOne);
         Instance.boardController.EnableAllButtons();
+    }
+    public static void RestartMatch()
+    {
         StartMatch();
     }
 
@@ -146,6 +150,12 @@ public class BattleController : SingletonDestroyable<BattleController>
         EnableRestartMatchButton(enable);
     }
     public void DisableGameplay() => EnableGameplay(false);
+
+    public void QuitMatch()
+    {
+        GameController.ShowLobbyScreen();
+        LobbyController.ShowEnterNameScreen();
+    }
 
     #endregion
 

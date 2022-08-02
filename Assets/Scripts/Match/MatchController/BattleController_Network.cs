@@ -4,7 +4,6 @@ using System;
 
 public class BattleController_Network : NetworkBehaviour
 {
-    private BattleController battleController;
     private NetworkManager networkManager;
 
     [SyncVar] public NetworkIdentity playerOneNetworkIdentity;
@@ -23,7 +22,6 @@ public class BattleController_Network : NetworkBehaviour
 
     private void Start()
     {
-        battleController = GetComponent<BattleController>();
         networkManager = NetworkManager.singleton;
     }
 
@@ -119,6 +117,7 @@ public class BattleController_Network : NetworkBehaviour
 
         BattleController.SetActivePlayer(BattleController.Instance.playerOne);
         BattleController.Instance.EnableGameplay();
+        BattleController.ResetMatchData();
         BattleController.Instance.RunEvents_StartMatch();
 
         ShouldEnableButtonsForLocalPlayer();
@@ -155,6 +154,34 @@ public class BattleController_Network : NetworkBehaviour
             EndTurn();
         else
             Cmd_EndTurn();
+    }
+
+    
+
+    public void Network_QuitMatch()
+    {
+        if (isServer)
+            Rpc_QuitMatch();
+        else
+            Cmd_QuitMatch();
+    }
+
+    private void QuitMatch()
+    {
+        BattleController.Instance.QuitMatch();
+        NetworkManager_TicTacToe.ExitLobby();
+    }
+
+    [ClientRpc]
+    public void Rpc_QuitMatch()
+    {
+        QuitMatch();
+    }
+
+    [Command(channel = 0, requiresAuthority = false)]
+    public void Cmd_QuitMatch()
+    {
+        Rpc_QuitMatch();
     }
 
     private void EndTurn()
@@ -267,5 +294,25 @@ public class BattleController_Network : NetworkBehaviour
             BattleController.Instance.BoardController.EnableAvailableButtons();
         else
             BattleController.Instance.BoardController.DisableAvailableButtons();
+    }
+
+    public void Network_DisconnectAllClients()
+    {
+        if (isServer)
+            Rpc_DisconnectAllClients();
+        else
+            Cmd_DisconnectAllClients();
+    }
+
+    [Command(channel = 0, requiresAuthority = false)]
+    private void Cmd_DisconnectAllClients()
+    {
+        Rpc_DisconnectAllClients();
+    }
+
+    [ClientRpc]
+    private void Rpc_DisconnectAllClients()
+    {
+        NetworkManager_TicTacToe.ExitLobby();
     }
 }

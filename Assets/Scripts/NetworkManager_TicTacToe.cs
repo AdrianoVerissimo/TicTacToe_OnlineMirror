@@ -41,7 +41,16 @@ public class NetworkManager_TicTacToe : NetworkManager
     }
     private void HandleClientDisconnected()
     {
+        
+    }
 
+    public override void OnStopHost()
+    {
+        
+    }
+    public override void OnStopClient()
+    {
+        
     }
 
     public static void HostLobby()
@@ -54,5 +63,19 @@ public class NetworkManager_TicTacToe : NetworkManager
 
         Instance.networkAddress = ipAddress;
         Instance.StartClient();
+    }
+    public static void ExitLobby()
+    {
+        bool isServer = CharacterController.LocalPlayer.isServer;
+
+        if (isServer)
+            Instance.StopHost();
+        else
+            Instance.StopClient();
+    }
+
+    public void Network_ExitLobby()
+    {
+        
     }
 }
