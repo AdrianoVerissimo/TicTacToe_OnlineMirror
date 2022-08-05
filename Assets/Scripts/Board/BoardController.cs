@@ -5,7 +5,7 @@ public class BoardController : MonoBehaviour
 {
     public static readonly int NoScoreValue = -1;
 
-    private int[,] scoreArray = new int[3, 3];
+    public int[,] ScoreArray { get; set; } = new int[3, 3];
     private int rowCount = 3;
     private int columnCount = 3;
 
@@ -42,7 +42,7 @@ public class BoardController : MonoBehaviour
         rowPosition = rowPosition >= rowCount ? rowCount - 1 : rowPosition;
         columnPosition = columnPosition >= columnCount ? rowCount - 1 : columnPosition;
 
-        scoreArray[rowPosition, columnPosition] = value;
+        ScoreArray[rowPosition, columnPosition] = value;
 
         return this;
     }
@@ -73,9 +73,9 @@ public class BoardController : MonoBehaviour
             for (int j = 0; j < columnCount; j++)
             {
                 if (checkVertical)
-                    hasScore = scoreArray[i, j] == player.PlayerID;
+                    hasScore = ScoreArray[i, j] == player.PlayerID;
                 else
-                    hasScore = scoreArray[j, i] == player.PlayerID;
+                    hasScore = ScoreArray[j, i] == player.PlayerID;
 
                 if (hasScore)
                     lineScoreCount++;
@@ -110,9 +110,9 @@ public class BoardController : MonoBehaviour
         for (int i = 0; i < rowCount; i++)
         {
             if (!reverse)
-                hasScore = scoreArray[i, i] == player.PlayerID;
+                hasScore = ScoreArray[i, i] == player.PlayerID;
             else
-                hasScore = scoreArray[i, rowCount - 1 - i] == player.PlayerID;
+                hasScore = ScoreArray[i, rowCount - 1 - i] == player.PlayerID;
 
             if (hasScore)
                 lineScoreCount++;
@@ -155,7 +155,7 @@ public class BoardController : MonoBehaviour
 
     public int GetPlayerScoreAtPosition(int positionX, int positionY)
     {
-        int score = scoreArray[positionX, positionY];
+        int score = ScoreArray[positionX, positionY];
         return score;
     }
     public bool HasPlayerScoreAtPosition(int positionX, int positionY)
@@ -172,7 +172,7 @@ public class BoardController : MonoBehaviour
         {
             for (int j = 0; j < columnCount; j++)
             {
-                text += scoreArray[i, j].ToString() + "|";
+                text += ScoreArray[i, j].ToString() + "|";
             }
             text += "\n";
         }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using Mirror;
 using System;
 
@@ -255,7 +256,8 @@ public class BattleController_Network : NetworkBehaviour
         BoardController boardController = BattleController.Instance.BoardController;
 
         BattleController.ScorePoint(activePlayer, positionX, positionY);
-        Rpc_UpdateClickedButtonUI(activePlayer.netIdentity, positionX, positionY);
+
+        Rpc_UpdateClickedButtonInformation(activePlayer.netIdentity, positionX, positionY);
     }
 
     [Command(channel = 0, requiresAuthority = false)]
@@ -267,14 +269,20 @@ public class BattleController_Network : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void Rpc_UpdateClickedButtonUI(NetworkIdentity activePlayerNetIdentity, int positionX, int positionY)
+    private void Rpc_UpdateClickedButtonInformation(NetworkIdentity activePlayerNetIdentity, int positionX, int positionY)
     {
+
         CharacterController activePlayer = activePlayerNetIdentity.gameObject.GetComponent<CharacterController>();
         BoardController boardController = BattleController.Instance.BoardController;
+
+        if (!isServer)
+            BattleController.ScorePoint(activePlayer, positionX, positionY);
+
         BoardButton clickedButton = boardController.GetButtonByCoordinates(positionX, positionY);
         BoardButton_OnClick_RegisterScore clickedButton_RegisterScore = clickedButton.gameObject.GetComponent<BoardButton_OnClick_RegisterScore>();
 
         clickedButton_RegisterScore.UpdateUI(activePlayer);
+        clickedButton.gameObject.GetComponent<Image>().color = Color.green;
         clickedButton.DisableInteraction();
     }
 

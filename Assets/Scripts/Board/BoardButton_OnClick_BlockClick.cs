@@ -15,6 +15,6 @@ public class BoardButton_OnClick_BlockClick : MonoBehaviour, IBoardButton_OnClic
                 return;
         }
 
-        boardButton.DisableInteraction();
+        //boardButton.DisableInteraction();
     }
 }
