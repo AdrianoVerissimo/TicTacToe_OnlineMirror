@@ -11,7 +11,7 @@ public class BattleController_OnEndMatch_UpdateUI : MonoBehaviour, IMatchControl
     {
         string playerName = BattleController.ActivePlayer.playerName;
         string localPlayerName = CharacterController.LocalPlayer.playerName;
-        bool localPlayerWon = playerName.Equals(localPlayerName);
+        bool localPlayerWon = playerName == localPlayerName;
         string text = "";
         string winText = "";
 

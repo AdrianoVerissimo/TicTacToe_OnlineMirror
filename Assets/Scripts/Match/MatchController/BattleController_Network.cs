@@ -282,7 +282,6 @@ public class BattleController_Network : NetworkBehaviour
         BoardButton_OnClick_RegisterScore clickedButton_RegisterScore = clickedButton.gameObject.GetComponent<BoardButton_OnClick_RegisterScore>();
 
         clickedButton_RegisterScore.UpdateUI(activePlayer);
-        clickedButton.gameObject.GetComponent<Image>().color = Color.green;
         clickedButton.DisableInteraction();
     }
 
