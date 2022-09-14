@@ -26,13 +26,12 @@ public class CharacterController : NetworkBehaviour
 
     public static void GeneratePlayerID(CharacterController player)
     {
-        Debug.Log("GeneratePlayerID");
         int newID = GetNewPlayerID();
         player.SetPlayerID(newID);
     }
     public static void ResetPlayerID(CharacterController player)
     {
-        SetCountPlayerID(PlayerID_emptyValue);
+        player.SetPlayerID(PlayerID_emptyValue);
     }
     private static int GetNewPlayerID()
     {

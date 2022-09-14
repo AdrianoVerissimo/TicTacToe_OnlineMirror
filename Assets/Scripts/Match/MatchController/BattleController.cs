@@ -163,7 +163,6 @@ public class BattleController : SingletonDestroyable<BattleController>
 
     public static void GeneratePlayersIDs()
     {
-        Debug.Log("Battle controller GeneratePlayersIDs");
         CharacterController.GeneratePlayerID(Instance.playerOne);
         CharacterController.GeneratePlayerID(Instance.playerTwo);
     }

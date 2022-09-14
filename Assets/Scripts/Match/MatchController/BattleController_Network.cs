@@ -37,13 +37,11 @@ public class BattleController_Network : NetworkBehaviour
 
     public void GeneratePlayersIDs()
     {
-        Debug.Log("GeneratePlayersIDs");
         CharacterController.GeneratePlayerID(playerOneCharacterController);
         CharacterController.GeneratePlayerID(playerTwoCharacterController);
     }
     public void ResetPlayersIDs()
     {
-        Debug.Log("ResetPlayersIDs");
         CharacterController.ResetPlayerID(playerOneCharacterController);
         CharacterController.ResetPlayerID(playerTwoCharacterController);
     }
@@ -106,6 +104,8 @@ public class BattleController_Network : NetworkBehaviour
 
         if (!canStartMatch)
             return;
+
+        CharacterController.ResetCountPlayerID();
 
         LoadPlayersCharacterControllers();
         GeneratePlayersIDs();
@@ -195,7 +195,6 @@ public class BattleController_Network : NetworkBehaviour
     {
         BattleController.Instance.QuitMatch();
         NetworkManager_TicTacToe.ExitLobby();
-        ResetPlayersIDs();
     }
 
     [ClientRpc]
