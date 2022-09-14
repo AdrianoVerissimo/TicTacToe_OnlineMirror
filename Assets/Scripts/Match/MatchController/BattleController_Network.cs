@@ -11,6 +11,9 @@ public class BattleController_Network : NetworkBehaviour
     [SyncVar] public NetworkIdentity playerTwoNetworkIdentity;
     [SyncVar] public BattleController.MatchStatus CurrentMatchStatus;
 
+    private CharacterController playerOneCharacterController;
+    private CharacterController playerTwoCharacterController;
+
     public static BattleController_Network Instance;
 
     private void Awake()
@@ -24,6 +27,25 @@ public class BattleController_Network : NetworkBehaviour
     private void Start()
     {
         networkManager = NetworkManager.singleton;
+    }
+
+    public void LoadPlayersCharacterControllers()
+    {
+        playerOneCharacterController = playerOneNetworkIdentity.gameObject.GetComponent<CharacterController>();
+        playerTwoCharacterController = playerTwoNetworkIdentity.gameObject.GetComponent<CharacterController>();
+    }
+
+    public void GeneratePlayersIDs()
+    {
+        Debug.Log("GeneratePlayersIDs");
+        CharacterController.GeneratePlayerID(playerOneCharacterController);
+        CharacterController.GeneratePlayerID(playerTwoCharacterController);
+    }
+    public void ResetPlayersIDs()
+    {
+        Debug.Log("ResetPlayersIDs");
+        CharacterController.ResetPlayerID(playerOneCharacterController);
+        CharacterController.ResetPlayerID(playerTwoCharacterController);
     }
 
     public void Network_RegisterPlayerOnMatch(NetworkIdentity playerNetworkIdentity)
@@ -85,6 +107,9 @@ public class BattleController_Network : NetworkBehaviour
         if (!canStartMatch)
             return;
 
+        LoadPlayersCharacterControllers();
+        GeneratePlayersIDs();
+
         StartMatch();
     }
     [Command(channel = 0, requiresAuthority = false)]
@@ -98,8 +123,6 @@ public class BattleController_Network : NetworkBehaviour
         CharacterController playerOne = playerOneNetworkIdentity.gameObject.GetComponent<CharacterController>();
         CharacterController playerTwo = playerTwoNetworkIdentity.gameObject.GetComponent<CharacterController>();
 
-        CharacterController.GeneratePlayerID(playerOne);
-        CharacterController.GeneratePlayerID(playerTwo);
         BattleController.SetupMatch();
 
         Rpc_StartMatch(playerOne.PlayerID, playerTwo.PlayerID, playerOneNetworkIdentity, playerTwoNetworkIdentity);
@@ -141,6 +164,7 @@ public class BattleController_Network : NetworkBehaviour
     [ClientRpc]
     public void Rpc_RestartMatch()
     {
+        CharacterController.ResetCountPlayerID();
         BattleController.RestartMatch();
     }
     [Command(channel = 0, requiresAuthority = false)]
@@ -171,6 +195,7 @@ public class BattleController_Network : NetworkBehaviour
     {
         BattleController.Instance.QuitMatch();
         NetworkManager_TicTacToe.ExitLobby();
+        ResetPlayersIDs();
     }
 
     [ClientRpc]
@@ -321,5 +346,6 @@ public class BattleController_Network : NetworkBehaviour
     private void Rpc_DisconnectAllClients()
     {
         NetworkManager_TicTacToe.ExitLobby();
+        ResetPlayersIDs();
     }
 }

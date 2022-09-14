@@ -3,7 +3,8 @@ using Mirror;
 
 public class CharacterController : NetworkBehaviour
 {
-    public int PlayerID { get; private set; }
+    public int PlayerID { get; private set; } = -1;
+    private static int PlayerID_emptyValue = -1;
     [SyncVar] public string playerName;
 
     public static int CountPlayerID { get; private set; } = 0;
@@ -25,13 +26,18 @@ public class CharacterController : NetworkBehaviour
 
     public static void GeneratePlayerID(CharacterController player)
     {
+        Debug.Log("GeneratePlayerID");
         int newID = GetNewPlayerID();
         player.SetPlayerID(newID);
     }
+    public static void ResetPlayerID(CharacterController player)
+    {
+        SetCountPlayerID(PlayerID_emptyValue);
+    }
     private static int GetNewPlayerID()
     {
-        int newID = CountPlayerID;
-        SetCountPlayerID(CountPlayerID + 1);
+        int newID = CountPlayerID + 1;
+        SetCountPlayerID(newID);
 
         return newID;
     }
@@ -116,5 +122,6 @@ public class CharacterController : NetworkBehaviour
         BattleController_Network.Instance.Network_DisconnectAllClients();
         BattleController.Instance.QuitMatch();
         NetworkManager_TicTacToe.ExitLobby();
+        BattleController_Network.Instance.ResetPlayersIDs();
     }
 }

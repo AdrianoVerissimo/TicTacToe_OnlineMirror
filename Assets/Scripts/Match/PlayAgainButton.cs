@@ -6,6 +6,7 @@ public class PlayAgainButton : MonoBehaviour
     public void PlayAgain()
     {
         bool isMultiplayerOnline = GameController.Instance.CurrentGameMode == GameController.GameMode.MULTIPLAYER_ONLINE;
+        Debug.Log("isMultiplayerOnline: " + isMultiplayerOnline);
         if (!isMultiplayerOnline)
         {
             BattleController.RestartMatch();
