@@ -9,9 +9,10 @@ public class BattleController_OnEndMatch_UpdateUI : MonoBehaviour, IMatchControl
 
     public void OnEndMatch()
     {
-        string playerName = BattleController.ActivePlayer.playerName;
-        string localPlayerName = CharacterController.LocalPlayer.playerName;
-        bool localPlayerWon = playerName == localPlayerName;
+        uint activePlayerNetId = BattleController.ActivePlayer.netId;
+        uint localPlayerNetId = CharacterController.LocalPlayer.netId;
+
+        bool localPlayerWon = activePlayerNetId == localPlayerNetId;
         string text = "";
         string winText = "";
 
